@@ -2,89 +2,347 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title></title>
-		<description>A small and simple site I made to test out Jekyll. Watch out! I&#39;m going to make a material design theme next!</description>		
+		<description>A small and simple site I made to test out Jekyll.</description>		
 		<link>http://localhost:3000</link>
 		<atom:link href="http://localhost:3000/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
-				<title>Welcome to Jekyll!</title>
-				<description>&lt;p&gt;You&amp;#39;ll find this post in your &lt;code&gt;_posts&lt;/code&gt; directory - edit this post and re-build (or run with the &lt;code&gt;-w&lt;/code&gt; switch) to see your changes!
-To add new posts, simply add a file in the &lt;code&gt;_posts&lt;/code&gt; directory that follows the convention: YYYY-MM-DD-name-of-post.ext.&lt;/p&gt;
+				<title>Bayesian Kalman Filter</title>
+				<description>&lt;p&gt;A large contribution to Bayesian state space models was from Pole, West and Harrison. Both Petris and Durbin and Koopman reference this book as an authority for a Bayesian analysis of Gaussian state space models. Given the sequential/recursive nature of the Kalman filter, it fits nicely into a Bayesian approach. Thinking of the previous state distribution as a prior state distribution seems like an obvious choice. The subjective prior is less controversial here.&lt;/p&gt;
 
-&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
+&lt;p&gt;In machine learning, the Kalman filter is often introduced as a graphical model. It is analogous to the Hidden Markov Model (HMM). Where an HMM has discrete states, the Kalman filter has continuous. Both assume discrete time steps. A directed graphical model shows the relationship between the hidden and observed states.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;table style=&quot;border-spacing: 0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter gl&quot; style=&quot;text-align: right&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Tom&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints &#39;Hi, Tom&#39; to STDOUT.&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;We assume a Markov dependence between the nodes in the graph. Each state only depends on previous states. Here, the circles represent random variables. In the case of the Kalman filter, these are Gaussian. The shaded random variables are observable. While, the unshaded variables are latent or unobservable. An arrow between states indicates a dependence. A lack of an arrow represents a conditional independence between states. This is an important feature of the graph. It allows us to compute the joint distribution as a product of Gaussian distributions.&lt;/p&gt;
 
-&lt;p&gt;Check out the &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/mojombo/jekyll&quot;&gt;Jekyll&amp;#39;s GitHub repo&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The standard general state space model used in Kalman filters is typically defined as,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+y_{t} = F_t\theta_{t} + v_{t}, \mbox{ } v_{t} \sim N(0,v_{t}) \notag \\
+\theta_{t} = G_t\theta_{t-1} + w_{t}, \mbox{ } w_{t} \sim N(0,W_{t})
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;Using the Kalman filter involves a cycle of steps to predict and correct. The pattern of predicting and then correcting is essentially what makes up the Kalman filter. As shown in Petris, without assumptions about the distribution of the state estimate, filtering follows a number of steps. First, we want to compute the one-step predictive density for the state before an observation at time step t.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation*}
+f\left( \theta_t | y_{1:t-1} \right) = \int f\left(\theta_t | \theta_{t-1} \right)
+f\left( \theta_{t-1} | y_{1:t-1} \right) d\theta_{t-1}
+\end{equation*}&lt;/script&gt;
+
+&lt;p&gt;Then we compute the one-step predictive density for the observation also before an observation at time step t.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation*}
+f\left( y_t | y_{1:t-1} \right) = \int f\left( y_t | \theta_t \right) f\left( \theta_t | y_{1:t-1} \right) d\theta_{t}
+\end{equation*}&lt;/script&gt;
+
+&lt;p&gt;Finally, after observing the value at time t, we compute the filtering density which represents our beliefs about the value of at time t.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation*}
+f\left( \theta_t | y_{1:t} \right) = \frac{ f\left( y_t | \theta_t \right) f \left( \theta_t | y_{1:t-1} \right) }
+{ f \left( y_t | y_{1:t-1} \right) }
+\end{equation*}&lt;/script&gt;
+
+&lt;p&gt;This value is the starting point in the next time step.&lt;/p&gt;
+
+&lt;p&gt;These filtering equations can be difficult to solve. The Kalman filter makes the assumption of Gaussian distributions for the state and the observation . The nice mathematical properties of the Gaussian distribution help simplify the equations. We just need the mean and variances at each time step to fully describe the distributions. Since all distributions are Gaussian, the standard update equations for conjugate Gaussian distributions can be used to compute the new values given the previous means and covariances. Using the distribution of the state value from the previous time step as a prior which is distributed as , along with the state space equation defined earlier, we can compute any time step as follows.&lt;/p&gt;
+
+&lt;p&gt;First, we compute , which is Gaussian, using the state transition equation from the state space model. This is the the one-step predictive distribution of the state given the observations up to t-1.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+f\left(\theta_{t}|y_{1:t-1}\right) \mbox{ } &amp;\sim N(a_{t},R_{t}) \\ \\
+a_{t} &amp;= E[G_t\theta_t + w_t| y_{1:t-1}] = G_tm_{t-1} \\
+R_{t} &amp;= Var[G_t\theta_t + w_t | y_{1:t-1}] = G_tC_{t-1}G_t&#39; + W_t
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Then we predict the next observation, , which is also Gaussian. This prediction step is where we incorporate the dynamics of the model specified in the observation portion of the state space equation.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+f\left(Y_{t}|y_{1:t-1}\right) \mbox{ } &amp;\sim N(f_{t},Q_{t}) \\ \\
+f_{t} &amp;= E[F_t\theta_t + v_t| y_{1:t-1}] = F_ta_{t} \\
+Q_{t} &amp;= Var[F_t\theta_t + v_t| y_{1:t-1}] = F_tR_{t}F_t&#39; + V_t
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Both of the previous steps are before the observation at time t is used. When observation $y_t$ is known, we can compute using the results from the previous steps, and the new observation. The filtering distribution for the state estimate after observing .&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+f\left( \theta_t | y_t \right) &amp;\propto f\left(Y_t|\theta_t, y_{t-1} \right) f\left( \theta_t | y_{t-1}\right) \\
+&amp;\propto N(m_t,C_t) \\
+m_t &amp;= E[\theta_t | y_{1:t}] \\
+C_t &amp;= Var[\theta_t | y_{1:t}]
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;So the normal distribution that fully describes our estimate of at time t (for the univariate case) is&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+f(\theta_t|y_t) &amp;= N(m_t,C_t) \\
+&amp;= N(\frac{vm_{t-1} + C_{t-1}y_t}{v_t
++ C_{t-1}} , \frac{ v_tC_{t-1} }{v_t + C_{t-1}} )
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;If we inspect the mean of the new distribution, we see that it is a weighted average of the previous mean and the new observation (Petris) (using Bayesian updating).&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+m_t &amp;= \frac{v_tm_{t-1} + C_{t-1}y_t}{v_t + C_{t-1}} \\
+&amp;= \frac{ v_t }{ v_t + C_{t-1} }m_{t-1} + \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t \\
+&amp;= \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t + \left( 1 - \frac{ C_{t-1} }{ v_t + C_{t-1} }m_{t-1} \right) \\
+&amp;= m_{t-1} + \frac{ C_{t-1} }{ C_{t-1} + v_t } \left(y_{t} - m_{t-1} \right) \\
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;So the prediction error, is weighted by a factor
+&lt;script type=&quot;math/tex&quot;&gt;\begin{equation*}
+K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
+\end{equation*}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;This factor, is called the Kalman gain. There will be more weight when we are more uncertain about the prediction. The Kalman gain is what makes the Kalman filter adaptive. It determines how much we “trust” the observations. Therefore, it determines how much to correct them. The smaller is with respect to , the bigger the correction.&lt;/p&gt;
+
+&lt;p&gt;I highly recommend Petris if you are interested in learning more about Kalman Filtering (and you are familiar with R).&lt;/p&gt;
 </description>
-				<pubDate>Sat, 19 Mar 2016 17:40:41 +0000</pubDate>
-				<link>http://localhost:3000/post/jek/</link>
-				<guid isPermaLink="true">http://localhost:3000/post/jek/</guid>
+				<pubDate>Wed, 13 Apr 2016 00:00:00 -0500</pubDate>
+				<link>http://localhost:3000/post/Kalman_bayesian/</link>
+				<guid isPermaLink="true">http://localhost:3000/post/Kalman_bayesian/</guid>
 			</item>
 		
 			<item>
-				<title>Demo Post</title>
-				<description>&lt;p&gt;Praesent tincidunt vestibulum sem nec eleifend. Pellentesque adipiscing mollis adipiscing. Sed ipsum sem, eleifend eget dapibus in, tincidunt ut dolor. Curabitur gravida urna leo, eget auctor turpis feugiat non. Vivamus pharetra, lorem id ullamcorper rutrum, eros erat condimentum erat, ac dignissim lorem nisi nec nunc. Praesent tellus mi, volutpat quis nisl et, consectetur blandit nibh.&lt;/p&gt;
+				<title>Monte Carlo Methods</title>
+				<description>&lt;p&gt;Recently, I became interested in markov chain monte carlo (MCMC) methods. I have a Statistics degree and 
+a Computer Science degree, however, neither degree offered courses on MCMC. The more I learn about them, 
+the more I understand how they blur the lines between Stats and CS.&lt;/p&gt;
 
-&lt;p&gt;Nulla sit amet nulla non odio sodales mollis elementum sed sem. Aenean et laoreet enim. Curabitur vulputate, mi rutrum commodo condimentum, enim nunc feugiat magna, vel rutrum sapien ante nec ante. Donec nec nibh placerat, molestie felis ac, vulputate arcu. Donec condimentum pellentesque nibh vel tincidunt. Fusce sem ipsum, varius at laoreet vitae, accumsan sed nisl. Nunc eget viverra diam. Aliquam pulvinar, enim id commodo tincidunt, risus lectus pharetra lacus, et semper enim ligula ut mauris. Sed vitae sollicitudin ante. In sollicitudin placerat dui et sagittis.&lt;/p&gt;
+&lt;p&gt;What are they? Monte Carlo methods use random sampling to make statistical estimates. That’s pretty vague, but stick 
+with me. It’s all about making random samples, but you have to be smart about it. Where are you sampling from? 
+What samples should be included in your sample statistics? How do you generate efficient samples? If you would 
+like to explore an area of a particularly difficult density function, you don’t want to make all of your samples
+in one corner of the density.&lt;/p&gt;
 
-&lt;blockquote&gt;
-&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas egestas leo id tortor feugiat, sit amet cursus diam mollis. Nunc sit amet tellus est. Nunc lacus nisl, gravida ut aliquam vel, molestie eget odio. Nulla facilisi. Ut sed libero pharetra nunc volutpat hendrerit. Mauris eget mi adipiscing, congue tellus ut, scelerisque eros. Phasellus ullamcorper dictum tellus nec pretium.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;I think Wolfram Alpha is pretty cool. It’s an easy interface for some quick calculations. If weren’t sure
+what the intergal of a standard normal distribution from -1.96 to 1.96 was, we could put it in Wolfram Alpha:&lt;/p&gt;
 
-&lt;p&gt;Integer molestie orci ante, nec dictum metus aliquam ut. Donec id tristique enim. Quisque tellus est, dignissim ut justo ac, volutpat fringilla mi. Duis ultricies nec sapien vitae blandit. &lt;strong&gt;Suspendisse sed est mi&lt;/strong&gt;. Mauris varius sapien vel nulla accumsan, id tincidunt ipsum ultrices. Sed eget magna mauris. Etiam porttitor lacus ullamcorper lacus tincidunt aliquam. Sed feugiat congue fringilla. Nunc velit diam, vulputate sed metus vitae, iaculis tempor arcu. Proin consectetur a erat in dignissim.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;integrate e^(-x^2/2)/sqrt(2 pi) dx from -1.96 to 1.96
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&lt;ul&gt;
-&lt;li&gt;Nulla sit amet nulla non odio sodales mollis elementum sed sem.&lt;/li&gt;
-&lt;li&gt;Donec id tristique enim. Quisque tellus est, dignissim ut justo ac, volutpat fringilla mi.&lt;/li&gt;
-&lt;li&gt;Nam luctus erat dolor, non viverra nulla varius at.&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;Or in R, we could define a standard normal density function (or use dnorm for simplicity), and use 
+R’s &lt;code class=&quot;highlighter-rouge&quot;&gt;intergate&lt;/code&gt; function:&lt;/p&gt;
 
-&lt;p&gt;Curabitur nec ullamcorper dui, blandit aliquet ipsum. Integer suscipit odio quis eros fermentum auctor. Sed tincidunt quam eleifend, egestas erat vulputate, tincidunt metus. Maecenas gravida sodales mi nec posuere. Cras vel nisi condimentum, hendrerit lacus sed, scelerisque ipsum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nunc convallis vestibulum erat, quis porta tellus. &lt;em&gt;In lorem erat, sollicitudin varius posuere id, molestie ac eros&lt;/em&gt;. Fusce luctus tellus vitae vulputate venenatis. Sed scelerisque bibendum interdum. Sed pretium commodo ultrices. Fusce luctus quam id porttitor vulputate. Integer ornare consectetur diam eget rutrum. Etiam eget sapien metus.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;my_std_normal &amp;lt;- function(x) {  
+  exp(-x^2/2)/sqrt(2*pi)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&lt;p&gt;Proin at libero id lorem fermentum elementum quis eget est.&lt;/p&gt;
+&lt;p&gt;Standard normal&lt;/p&gt;
 
-&lt;ol&gt;
-&lt;li&gt;Nam bibendum turpis massa, at accumsan justo fermentum ac.&lt;/li&gt;
-&lt;li&gt;Nulla non nulla ut ante condimentum mattis vel at lectus.&lt;/li&gt;
-&lt;li&gt;Etiam eget tortor tincidunt, iaculis ligula a, tristique massa. Fusce sed congue lorem, interdum sodales nisl.&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;One of the simplest examples, is to estimate pi. &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; is used in the formula for the area of a circle (&lt;script type=&quot;math/tex&quot;&gt;Area = \pi * radius^2&lt;/script&gt;). Since we’re really just interested in pi, we can choose a simple circle to work with and find its area. By the formula, a circle with a radius of 1 will give an area of of just &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt;.&lt;/p&gt;
 
-&lt;p&gt;Etiam consequat euismod ornare. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla pellentesque ipsum vulputate, pellentesque nisl vitae, lacinia sem. Praesent auctor felis et odio ultrices, nec tempor elit lobortis. Etiam ornare massa non risus luctus, id iaculis lacus egestas. Pellentesque massa dolor, mattis id lobortis eget, tristique vitae est.&lt;/p&gt;
+&lt;p&gt;Now, if we place this circle in a square so that it inscribes the square (centered at 0,0), the square would have to be a 2 by 2 square (since the radius of our circle was 1). So the square would range from -1 to 1 in both the x and y axes.&lt;/p&gt;
 
-&lt;hr&gt;
+&lt;p&gt;With this setup, we can start using monte carlo to estimate pi. To use monte carlo, we simply sample numbers. In this case, we can sample numbers between 0 and 1 (using a simple random number generator found in most programming languages). Suppose we do this a thousand times for the positive side and a thousand times for the negative side. If we keep track of all the points samples, we can record the number within the circle (&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+x^2 + y^2 &lt; 1 %]]&gt;&lt;/script&gt;). So, if we pretend we don’t know the formula for the area of a circle, we could say that it is&lt;/p&gt;
 
-&lt;p&gt;Nam vulputate leo vitae libero vehicula, id tincidunt velit malesuada. In vel ornare nisi, id semper turpis. Vivamus erat elit, venenatis quis dui at, convallis suscipit sapien. Nunc in nisi scelerisque, aliquam mauris porttitor, facilisis ligula. Vestibulum cursus erat ac turpis bibendum, id pulvinar dolor dapibus. Proin vitae justo et velit imperdiet ultrices id id odio. Cras adipiscing ante vel mauris lobortis rutrum. Aenean eu felis est. In lacinia porttitor risus non sagittis.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Greeter&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;vi&quot;&gt;@message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;greet&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;john&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Greeter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Hello, World&amp;#39;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;john&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;greet&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Sed imperdiet interdum ultrices. Phasellus iaculis porttitor lorem nec scelerisque. Suspendisse eros urna, adipiscing vel luctus at, feugiat sit amet arcu. Aliquam porttitor ut urna pellentesque sagittis. Donec pellentesque venenatis diam sit amet cursus. Etiam luctus, metus quis gravida fermentum, tortor arcu consequat metus, eget viverra augue risus ac dui. Fusce faucibus scelerisque quam eu sagittis. Sed sit amet sapien non augue lobortis adipiscing. Sed sagittis at lectus eu tempus. Nulla non nulla ut ante condimentum mattis vel at lectus. Nulla ultricies dui et urna semper ultrices. Sed neque ante, dictum in dignissim luctus, facilisis ornare odio. Aenean tempor ultrices magna non pharetra. Curabitur vulputate nec est aliquet suscipit. Etiam ipsum sapien, dictum quis tristique vel, pretium at elit.&lt;/p&gt;
 </description>
-				<pubDate>Fri, 01 Jan 2016 00:00:00 +0000</pubDate>
-				<link>http://localhost:3000/post/tes/</link>
-				<guid isPermaLink="true">http://localhost:3000/post/tes/</guid>
+				<pubDate>Fri, 22 Jan 2016 00:00:00 -0600</pubDate>
+				<link>http://localhost:3000/post/MonteCarlo/</link>
+				<guid isPermaLink="true">http://localhost:3000/post/MonteCarlo/</guid>
+			</item>
+		
+			<item>
+				<title>Monte Carlo</title>
+				<description>&lt;p&gt;The concept of Monte Carlo estimation is simple and it’s a great demonstration of the laws of probability. Often times, it’s introduced by computing .&lt;/p&gt;
+
+&lt;p&gt;Using Python, we can create a function to demonstrate the concept of estimating using the Monte Carlo method. The function creates a random 2 dimensional point in the ranges 0 to 1. If we treat this as a quarter of a full circle (with radius 1), we can use the pythagorean theorem to determine if the random point is inside or outside the quarter of the circle.&lt;/p&gt;
+
+&lt;p&gt;If , then the random point is inside the circle. Otherwise, it’s outside. As we create more and more random points, we keep track of the number that fall inside the circle. Since we’re only using the first quadrant of the circle, the area is . Since we used a circle with radius of 1, this is just . So, the ratio of the number of points in the circle to the number of points generated approaches .&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;estimate_pi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;p1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+         &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can call the function a few times with different values.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;estimate_pi(100)&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;estimate_pi(100000)&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;estimate_pi(100000000)&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3.08000&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;3.14755&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.14156&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3.04000&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;3.14631&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.14161&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3.12000&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;3.13276&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.14172&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3.24000&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;3.14584&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.14138&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2.91999&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;3.14596&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.14154&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Is this useful for anything? Not really. There are much better ways to calculate . But, I think it is a good demonstration of the Monte Carlo concept. The same principal is used to calculate probability densities.&lt;/p&gt;
+</description>
+				<pubDate>Tue, 12 Jan 2016 00:00:00 -0600</pubDate>
+				<link>http://localhost:3000/post/Monte_carlo/</link>
+				<guid isPermaLink="true">http://localhost:3000/post/Monte_carlo/</guid>
+			</item>
+		
+			<item>
+				<title>Regression</title>
+				<description>&lt;p&gt;I’m a fan of the machine learning classes provided online by Stanford. I think it’s great that they provide high quality courses for free. Professor Andrew Ng does a great job of explaining core machine learning concepts. In some of the first lectures, he describes a machine learning framework using a linear regression model. The regression model is one of the most simple data models that exists. For a variable that is modeled by one variable, the linear regression model is simply a line (that includes slope and y-intercept coefficients, typically named with and respectively, in the statistics literature). When two variables model the output variable, the regression model is a plane. And so on.&lt;/p&gt;
+
+&lt;p&gt;For the one variable case, the model is&lt;/p&gt;
+
+&lt;p&gt;Typically with the simple linear regression model, the parameters are found analytically (using the method of least squares). But, to illustrate the machine learning framework described in the class, we’ll use a numerical optimization method typically used in machine learning.&lt;/p&gt;
+
+&lt;p&gt;First, I grabbed some sample data that had a linear relationship from here.&lt;/p&gt;
+
+&lt;p&gt;Using R, I simply type in the data. I added a column of 1’s to handle the intercept parameter&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cbind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;700&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;250&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;450&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;650&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;150&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Next, we define a model function that implements the linear model.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%*%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now, we just need to define the objective function (J).&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;objective&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;^&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here’s where we differ from the ml class. Instead of gradient descent, we can use R’s built general purpose optimization function. A number of optimization algorithms are available in optim, but with this simple example, they should all give the same answer.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;op&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;optim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;objective&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;BFGS&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;That’s it. The optimized weights are in the R object called ‘op’. The y-intercept is 650.27 and the slope is -73.07. To verify the numbers, we can use R’s lm function.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The lm function returns the exact same values, 650.27 and -73.07.&lt;/p&gt;
+
+&lt;p&gt;This same method could be used for logistic regression. We just change the model to the logit function (using appropriate data for logistic regression) and optimize again.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;dtv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%*%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It’s a toy example. A simple model like this isn’t much use in the real world, but it’s a start. More appropriate models can be used that might more realistically model data in higher dimensions. And possibly more efficient optimization algorithms could be used.&lt;/p&gt;
+</description>
+				<pubDate>Sat, 02 Jan 2016 00:00:00 -0600</pubDate>
+				<link>http://localhost:3000/post/Regression_ml/</link>
+				<guid isPermaLink="true">http://localhost:3000/post/Regression_ml/</guid>
+			</item>
+		
+			<item>
+				<title>Kalman DLMs</title>
+				<description>&lt;p&gt;The most difficult part of using the Kalman filter is finding the best state space model. Since the Kalman filter is so efficient to compute, the maximum likelihood estimates for the variance parameters are relatively easy to find. However, checking the assumptions of the Kalman filter for your chosen state space model can be time consuming.&lt;/p&gt;
+
+&lt;p&gt;There are a number of R packages for Kalman filtering (sspir, dlm, StructTS). I prefer the dlm package. Mostly because the book associated with the package is very good.&lt;/p&gt;
+
+&lt;p&gt;In R, we can experiment with the dlm package and the built-in data set called ‘co2’ to run some examples of Kalman filtering.&lt;/p&gt;
+
+&lt;p&gt;One of the great things about the dlm package is that it simplifies the building of state space models with the dlmMod(*) functions. These function allow you to define components of a state space model, such as trend or seasonal, and then lets you add the components to get the final state space model.&lt;/p&gt;
+
+&lt;p&gt;For example, we can use the dlmModPoly function to build a simple state space model with two parameters. One is V, the observation variance and the other is W, the process variance. Both of these are typically estimated using the dlmMLE function which performs maximum likelihood to get the estimates. It only requires a function that provides the state space model. For example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;dlmModPoly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This model just sets the variance parameters with the vector passed in. With this simple model, we can estimate parameters (using dlmMLE) and filter the data (using dlmFilter). Next, we can plot the filter and check the assumptions of the Kalman filter using the residuals.&lt;/p&gt;
+
+&lt;p&gt;Applying this model gives us these results:&lt;/p&gt;
+
+&lt;p&gt;Model 1 (no trend, no seasonal)&lt;/p&gt;
+
+&lt;p&gt;It’s difficult to see the difference between the filtered values and the data values because the filtered values are basically right on top of the data values. The “adaptive” nature of the Kalman filter adapts to the up and down seasonal trends, but the trends aren’t expected in the model. We can see this in the residual density estimate. Just like with a standard regression model, we expect the density of the residuals to be Gaussian. The QQ plot and density plot shows that’s not the case.&lt;/p&gt;
+
+&lt;p&gt;Next, we can create a state space model that expects seasonality.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;dlmModPoly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
+   &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dlmModSeas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Model 2 (no trend, with seasonal)
+Click to enlarge&lt;/p&gt;
+
+&lt;p&gt;With this model, we can see that the residuals look Gaussian now. In fact, this model looks much better. The dashed lines are 2 standard deviation confidence intervals. These intervals look reasonable as well. However, the estimate seems to lag the data a bit.&lt;/p&gt;
+
+&lt;p&gt;Our third model accounts for both seasonality and trend.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;seasons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;polyMod&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dlmModPoly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
+                      &lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])))&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;seasMod&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dlmModSeas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seasons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
+                      &lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seasons&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;-2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;polyMod&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seasMod&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Model 3 (with trend, with seasonal)
+Click to enlarge&lt;/p&gt;
+
+&lt;p&gt;This model looks the best. The residuals look Gaussian. The confidence intervals also look better than for the previous model. So far, this model looks good, but the Kalman filter also expects that the residuals are uncorrelated. We can use the tsdiag function to plot the residuals over time and look for autocorrelation.&lt;/p&gt;
+
+&lt;p&gt;These plots show that the residuals do not show autocorrelation. So this model seems to work well for the data.&lt;/p&gt;
+
+&lt;p&gt;This experimentation is time consuming. But once the state space model is chosen and the parameters are found, you have a powerful model for estimating, smoothing and forecasting.&lt;/p&gt;
+</description>
+				<pubDate>Mon, 28 Dec 2015 00:00:00 -0600</pubDate>
+				<link>http://localhost:3000/post/Kalman_dlm/</link>
+				<guid isPermaLink="true">http://localhost:3000/post/Kalman_dlm/</guid>
+			</item>
+		
+			<item>
+				<title>Kalman State Space</title>
+				<description>&lt;p&gt;Kalman filtering is a popular tool for adaptive estimation of time-series through noisy measurements. Initially, Kalman filtering started in electrical engineering, but it has found its way into economics, machine learning, finance and many other fields. In 1960 R.E. Kalman wrote a paper that expanded Wiener filtering to include state space methods and perform on-line, recursive computations versus a batch analysis. He proposed a new state space methods (introduced by Claude Shannon) to extend the Weiner-Hopf integral for stochastic processes.&lt;/p&gt;
+
+&lt;p&gt;Kalman filtering estimates what the optimal values of a measurement should be given noisy measurements. These estimates can also then be used for Kalman smoothing and forecasting. Part of the power of the Kalman Filter is the generality. Higher order modeling equations can be broken down into multiple first order equations. But before filtering the data, a state space model that defines the dynamics of the system is required. Once the correct state space model is defined, the Kalman filter application is straight-forward to apply. Because it is possible to define time-variant state space models, they are quite flexible, even when non-stationarity exists. Besides defining the state space equation, a second difficulty is estimating the parameters for the model. However, these are typically solved numerically and come with their own difficulties, but because the Kalman filtering model is Gaussian, standard MLE estimates of the Gaussian likelihood can be used.&lt;/p&gt;
+
+&lt;p&gt;The state space model defines the underlying dynamics of the system. Often times, it can be difficult to define the correct state space model when using the Kalman filter. Typically, domain knowledge must be incorporated into the state space model for good performance. State space model literature usually begins with a model called the local level model. This is one of the simplest state space models (with no trend or seasonality), but it is applied quite often.&lt;/p&gt;
+
+&lt;p&gt;Autoregressive (AR) and moving average (MA) models can be considered a subset of state space methods. Both of these models can be encoded in state space equations. Unlike ARMA models, state space models do not require that non-stationary time series be transformed using differencing.&lt;/p&gt;
+
+&lt;p&gt;Here the and matrices are assumed to be known during filtering. Often they are time invariant and the subscript is dropped. These matrices can be used for deterministic transformations on the state. These can allow the Kalman filter to model more complicated systems that have seasonal and periodic behavior.&lt;/p&gt;
+
+&lt;p&gt;However, before we could proceed to use this model, we would need a few parameters first. First, we need the variance parameters. Since the Kalman filter makes the assumption of zero mean Gaussian noise terms, a fairly straight forward likelihood function can be found. Once, we have a likelihood, we can numerically estimate the variance parameters (described later). But besides the variances parameters, we also need initial values to begin the recursive computations. The first estimates of the Kalman filter are typically poor and have a large error. So, less work is put into computing good starting values. In fact, often they are chosen to be 1. The adaptive nature of the Kalman filter quickly adapts to computing optimal values. Some other assumptions are required as well. The Kalman filter assumes that the variances parameters are uncorrelated each other, as well as, contain no autocorrelation. It also assumes that the variance parameters are uncorrelated with the initial values.&lt;/p&gt;
+
+&lt;p&gt;In the next post, I’ll look at the actual filtering equations.&lt;/p&gt;
+</description>
+				<pubDate>Tue, 22 Dec 2015 00:00:00 -0600</pubDate>
+				<link>http://localhost:3000/post/Kalman_statespace/</link>
+				<guid isPermaLink="true">http://localhost:3000/post/Kalman_statespace/</guid>
 			</item>
 		
 	</channel>

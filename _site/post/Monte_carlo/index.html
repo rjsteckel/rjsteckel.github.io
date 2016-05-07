@@ -1,0 +1,121 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" type="image/icon" href="/favicon.ico">
+
+<title>Monte Carlo</title>
+
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/main.css">
+
+<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+</head>
+<body>
+
+
+<header>
+<div id="nav_container">
+<nav>
+
+  <ul>
+  <h1><a href="/">Little Big Blue</a></h1>
+    
+      
+      
+
+      <li class="">
+        <a class="" href="/about/">About</a>
+      </li>
+    
+      
+      
+
+      <li class="">
+        <a class="" href="/archives/">Archives</a>
+      </li>
+    
+      
+      
+
+      <li class="">
+        <a class="" href="/tags/">Tags</a>
+      </li>
+    
+  </ul>
+
+</nav>
+</div>
+</header>
+
+<section id="main">
+	<article>
+<div class="heading">Monte Carlo</div>
+<p class="meta"><a class="permalink" href="">&#9679;</a> 12 Jan 2016</p>
+<p>The concept of Monte Carlo estimation is simple and it’s a great demonstration of the laws of probability. Often times, it’s introduced by computing .</p>
+
+<p>Using Python, we can create a function to demonstrate the concept of estimating using the Monte Carlo method. The function creates a random 2 dimensional point in the ranges 0 to 1. If we treat this as a quarter of a full circle (with radius 1), we can use the pythagorean theorem to determine if the random point is inside or outside the quarter of the circle.</p>
+
+<p>If , then the random point is inside the circle. Otherwise, it’s outside. As we create more and more random points, we keep track of the number that fall inside the circle. Since we’re only using the first quadrant of the circle, the area is . Since we used a circle with radius of 1, this is just . So, the ratio of the number of points in the circle to the number of points generated approaches .</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">estimate_pi</span><span class="p">(</span><span class="no">N</span><span class="p">):</span>
+   <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">range</span><span class="p">(</span><span class="no">N</span><span class="p">):</span>
+      <span class="n">p1</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="nf">random</span><span class="p">();</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="nf">random</span><span class="p">()</span>
+      <span class="k">if</span> <span class="n">math</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">p1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+         <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+   <span class="k">return</span> <span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="n">count</span><span class="o">/</span><span class="n">float</span><span class="p">(</span><span class="no">N</span><span class="p">))</span></code></pre></figure>
+
+<p>Now we can call the function a few times with different values.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>estimate_pi(100)</th>
+      <th style="text-align: center">estimate_pi(100000)</th>
+      <th style="text-align: right">estimate_pi(100000000)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3.08000</td>
+      <td style="text-align: center">3.14755</td>
+      <td style="text-align: right">3.14156</td>
+    </tr>
+    <tr>
+      <td>3.04000</td>
+      <td style="text-align: center">3.14631</td>
+      <td style="text-align: right">3.14161</td>
+    </tr>
+    <tr>
+      <td>3.12000</td>
+      <td style="text-align: center">3.13276</td>
+      <td style="text-align: right">3.14172</td>
+    </tr>
+    <tr>
+      <td>3.24000</td>
+      <td style="text-align: center">3.14584</td>
+      <td style="text-align: right">3.14138</td>
+    </tr>
+    <tr>
+      <td>2.91999</td>
+      <td style="text-align: center">3.14596</td>
+      <td style="text-align: right">3.14154</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Is this useful for anything? Not really. There are much better ways to calculate . But, I think it is a good demonstration of the Monte Carlo concept. The same principal is used to calculate probability densities.</p>
+
+
+
+	
+
+</article>
+</section>
+
+</body>
+</html>

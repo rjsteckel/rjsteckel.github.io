@@ -8,6 +8,11 @@
 
 <link rel="stylesheet" href="/css/syntax.css">
 <link rel="stylesheet" href="/css/main.css">
+
+<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
 </head>
 <body>
 
@@ -49,99 +54,277 @@
 <section id="main">
 	  
       <article>
-      <div class="heading"><a href="/post/jek/">Welcome to Jekyll!</a></div>
-      <p class="meta"><a class="permalink" href="/post/jek/">&#9679;</a> 19 Mar 2016</p>
+      <div class="heading"><a href="/post/Kalman_bayesian/">Bayesian Kalman Filter</a></div>
+      <p class="meta"><a class="permalink" href="/post/Kalman_bayesian/">&#9679;</a> 13 Apr 2016</p>
       <div>
-        <p>You&#39;ll find this post in your <code>_posts</code> directory - edit this post and re-build (or run with the <code>-w</code> switch) to see your changes!
-To add new posts, simply add a file in the <code>_posts</code> directory that follows the convention: YYYY-MM-DD-name-of-post.ext.</p>
+        <p>A large contribution to Bayesian state space models was from Pole, West and Harrison. Both Petris and Durbin and Koopman reference this book as an authority for a Bayesian analysis of Gaussian state space models. Given the sequential/recursive nature of the Kalman filter, it fits nicely into a Bayesian approach. Thinking of the previous state distribution as a prior state distribution seems like an obvious choice. The subjective prior is less controversial here.</p>
 
-<p>Jekyll also offers powerful support for code snippets:</p>
+<p>In machine learning, the Kalman filter is often introduced as a graphical model. It is analogous to the Hidden Markov Model (HMM). Where an HMM has discrete states, the Kalman filter has continuous. Both assume discrete time steps. A directed graphical model shows the relationship between the hidden and observed states.</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5</pre></td><td class="code"><pre><span class="k">def</span> <span class="nf">print_hi</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
-  <span class="nb">puts</span> <span class="s2">"Hi, </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span>
-<span class="k">end</span>
-<span class="n">print_hi</span><span class="p">(</span><span class="s1">'Tom'</span><span class="p">)</span>
-<span class="c1">#=&gt; prints 'Hi, Tom' to STDOUT.</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+<p>We assume a Markov dependence between the nodes in the graph. Each state only depends on previous states. Here, the circles represent random variables. In the case of the Kalman filter, these are Gaussian. The shaded random variables are observable. While, the unshaded variables are latent or unobservable. An arrow between states indicates a dependence. A lack of an arrow represents a conditional independence between states. This is an important feature of the graph. It allows us to compute the joint distribution as a product of Gaussian distributions.</p>
 
-<p>Check out the <a href="http://jekyllrb.com">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/mojombo/jekyll">Jekyll&#39;s GitHub repo</a>.</p>
+<p>The standard general state space model used in Kalman filters is typically defined as,</p>
+
+<script type="math/tex; mode=display">\begin{align}
+y_{t} = F_t\theta_{t} + v_{t}, \mbox{ } v_{t} \sim N(0,v_{t}) \notag \\
+\theta_{t} = G_t\theta_{t-1} + w_{t}, \mbox{ } w_{t} \sim N(0,W_{t})
+\end{align}</script>
+
+<p>Using the Kalman filter involves a cycle of steps to predict and correct. The pattern of predicting and then correcting is essentially what makes up the Kalman filter. As shown in Petris, without assumptions about the distribution of the state estimate, filtering follows a number of steps. First, we want to compute the one-step predictive density for the state before an observation at time step t.</p>
+
+<script type="math/tex; mode=display">\begin{equation*}
+f\left( \theta_t | y_{1:t-1} \right) = \int f\left(\theta_t | \theta_{t-1} \right)
+f\left( \theta_{t-1} | y_{1:t-1} \right) d\theta_{t-1}
+\end{equation*}</script>
+
+<p>Then we compute the one-step predictive density for the observation also before an observation at time step t.</p>
+
+<script type="math/tex; mode=display">\begin{equation*}
+f\left( y_t | y_{1:t-1} \right) = \int f\left( y_t | \theta_t \right) f\left( \theta_t | y_{1:t-1} \right) d\theta_{t}
+\end{equation*}</script>
+
+<p>Finally, after observing the value at time t, we compute the filtering density which represents our beliefs about the value of at time t.</p>
+
+<script type="math/tex; mode=display">\begin{equation*}
+f\left( \theta_t | y_{1:t} \right) = \frac{ f\left( y_t | \theta_t \right) f \left( \theta_t | y_{1:t-1} \right) }
+{ f \left( y_t | y_{1:t-1} \right) }
+\end{equation*}</script>
+
+<p>This value is the starting point in the next time step.</p>
+
+<p>These filtering equations can be difficult to solve. The Kalman filter makes the assumption of Gaussian distributions for the state and the observation . The nice mathematical properties of the Gaussian distribution help simplify the equations. We just need the mean and variances at each time step to fully describe the distributions. Since all distributions are Gaussian, the standard update equations for conjugate Gaussian distributions can be used to compute the new values given the previous means and covariances. Using the distribution of the state value from the previous time step as a prior which is distributed as , along with the state space equation defined earlier, we can compute any time step as follows.</p>
+
+<p>First, we compute , which is Gaussian, using the state transition equation from the state space model. This is the the one-step predictive distribution of the state given the observations up to t-1.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+f\left(\theta_{t}|y_{1:t-1}\right) \mbox{ } &\sim N(a_{t},R_{t}) \\ \\
+a_{t} &= E[G_t\theta_t + w_t| y_{1:t-1}] = G_tm_{t-1} \\
+R_{t} &= Var[G_t\theta_t + w_t | y_{1:t-1}] = G_tC_{t-1}G_t' + W_t
+\end{align*} %]]></script>
+
+<p>Then we predict the next observation, , which is also Gaussian. This prediction step is where we incorporate the dynamics of the model specified in the observation portion of the state space equation.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+f\left(Y_{t}|y_{1:t-1}\right) \mbox{ } &\sim N(f_{t},Q_{t}) \\ \\
+f_{t} &= E[F_t\theta_t + v_t| y_{1:t-1}] = F_ta_{t} \\
+Q_{t} &= Var[F_t\theta_t + v_t| y_{1:t-1}] = F_tR_{t}F_t' + V_t
+\end{align*} %]]></script>
+
+<p>Both of the previous steps are before the observation at time t is used. When observation $y_t$ is known, we can compute using the results from the previous steps, and the new observation. The filtering distribution for the state estimate after observing .</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+f\left( \theta_t | y_t \right) &\propto f\left(Y_t|\theta_t, y_{t-1} \right) f\left( \theta_t | y_{t-1}\right) \\
+&\propto N(m_t,C_t) \\
+m_t &= E[\theta_t | y_{1:t}] \\
+C_t &= Var[\theta_t | y_{1:t}]
+\end{align*} %]]></script>
+
+<p>So the normal distribution that fully describes our estimate of at time t (for the univariate case) is</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+f(\theta_t|y_t) &= N(m_t,C_t) \\
+&= N(\frac{vm_{t-1} + C_{t-1}y_t}{v_t
++ C_{t-1}} , \frac{ v_tC_{t-1} }{v_t + C_{t-1}} )
+\end{align*} %]]></script>
+
+<p>If we inspect the mean of the new distribution, we see that it is a weighted average of the previous mean and the new observation (Petris) (using Bayesian updating).</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+m_t &= \frac{v_tm_{t-1} + C_{t-1}y_t}{v_t + C_{t-1}} \\
+&= \frac{ v_t }{ v_t + C_{t-1} }m_{t-1} + \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t \\
+&= \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t + \left( 1 - \frac{ C_{t-1} }{ v_t + C_{t-1} }m_{t-1} \right) \\
+&= m_{t-1} + \frac{ C_{t-1} }{ C_{t-1} + v_t } \left(y_{t} - m_{t-1} \right) \\
+\end{align*} %]]></script>
+
+<p>So the prediction error, is weighted by a factor
+<script type="math/tex">\begin{equation*}
+K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
+\end{equation*}</script></p>
+
+<p>This factor, is called the Kalman gain. There will be more weight when we are more uncertain about the prediction. The Kalman gain is what makes the Kalman filter adaptive. It determines how much we “trust” the observations. Therefore, it determines how much to correct them. The smaller is with respect to , the bigger the correction.</p>
+
+<p>I highly recommend Petris if you are interested in learning more about Kalman Filtering (and you are familiar with R).</p>
 
         </div>
              
 	
-    	<span class="label label-default"><a href="/tags#jekyll-ref" title="View posts tagged with &quot;jekyll&quot;">jekyll</a></span>
-    
-    	<span class="label label-default"><a href="/tags#demo-ref" title="View posts tagged with &quot;demo&quot;">demo</a></span>
-    
 
 
      </article>
      <hr>
   
       <article>
-      <div class="heading"><a href="/post/tes/">Demo Post</a></div>
-      <p class="meta"><a class="permalink" href="/post/tes/">&#9679;</a> 01 Jan 2016</p>
+      <div class="heading"><a href="/post/MonteCarlo/">Monte Carlo Methods</a></div>
+      <p class="meta"><a class="permalink" href="/post/MonteCarlo/">&#9679;</a> 22 Jan 2016</p>
       <div>
-        <p>Praesent tincidunt vestibulum sem nec eleifend. Pellentesque adipiscing mollis adipiscing. Sed ipsum sem, eleifend eget dapibus in, tincidunt ut dolor. Curabitur gravida urna leo, eget auctor turpis feugiat non. Vivamus pharetra, lorem id ullamcorper rutrum, eros erat condimentum erat, ac dignissim lorem nisi nec nunc. Praesent tellus mi, volutpat quis nisl et, consectetur blandit nibh.</p>
+        <p>Recently, I became interested in markov chain monte carlo (MCMC) methods. I have a Statistics degree and 
+a Computer Science degree, however, neither degree offered courses on MCMC. The more I learn about them, 
+the more I understand how they blur the lines between Stats and CS.</p>
 
-<p>Nulla sit amet nulla non odio sodales mollis elementum sed sem. Aenean et laoreet enim. Curabitur vulputate, mi rutrum commodo condimentum, enim nunc feugiat magna, vel rutrum sapien ante nec ante. Donec nec nibh placerat, molestie felis ac, vulputate arcu. Donec condimentum pellentesque nibh vel tincidunt. Fusce sem ipsum, varius at laoreet vitae, accumsan sed nisl. Nunc eget viverra diam. Aliquam pulvinar, enim id commodo tincidunt, risus lectus pharetra lacus, et semper enim ligula ut mauris. Sed vitae sollicitudin ante. In sollicitudin placerat dui et sagittis.</p>
+<p>What are they? Monte Carlo methods use random sampling to make statistical estimates. That’s pretty vague, but stick 
+with me. It’s all about making random samples, but you have to be smart about it. Where are you sampling from? 
+What samples should be included in your sample statistics? How do you generate efficient samples? If you would 
+like to explore an area of a particularly difficult density function, you don’t want to make all of your samples
+in one corner of the density.</p>
 
-<blockquote>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas egestas leo id tortor feugiat, sit amet cursus diam mollis. Nunc sit amet tellus est. Nunc lacus nisl, gravida ut aliquam vel, molestie eget odio. Nulla facilisi. Ut sed libero pharetra nunc volutpat hendrerit. Mauris eget mi adipiscing, congue tellus ut, scelerisque eros. Phasellus ullamcorper dictum tellus nec pretium.</p>
-</blockquote>
+<p>I think Wolfram Alpha is pretty cool. It’s an easy interface for some quick calculations. If weren’t sure
+what the intergal of a standard normal distribution from -1.96 to 1.96 was, we could put it in Wolfram Alpha:</p>
 
-<p>Integer molestie orci ante, nec dictum metus aliquam ut. Donec id tristique enim. Quisque tellus est, dignissim ut justo ac, volutpat fringilla mi. Duis ultricies nec sapien vitae blandit. <strong>Suspendisse sed est mi</strong>. Mauris varius sapien vel nulla accumsan, id tincidunt ipsum ultrices. Sed eget magna mauris. Etiam porttitor lacus ullamcorper lacus tincidunt aliquam. Sed feugiat congue fringilla. Nunc velit diam, vulputate sed metus vitae, iaculis tempor arcu. Proin consectetur a erat in dignissim.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>integrate e^(-x^2/2)/sqrt(2 pi) dx from -1.96 to 1.96
+</code></pre>
+</div>
 
-<ul>
-<li>Nulla sit amet nulla non odio sodales mollis elementum sed sem.</li>
-<li>Donec id tristique enim. Quisque tellus est, dignissim ut justo ac, volutpat fringilla mi.</li>
-<li>Nam luctus erat dolor, non viverra nulla varius at.</li>
-</ul>
+<p>Or in R, we could define a standard normal density function (or use dnorm for simplicity), and use 
+R’s <code class="highlighter-rouge">intergate</code> function:</p>
 
-<p>Curabitur nec ullamcorper dui, blandit aliquet ipsum. Integer suscipit odio quis eros fermentum auctor. Sed tincidunt quam eleifend, egestas erat vulputate, tincidunt metus. Maecenas gravida sodales mi nec posuere. Cras vel nisi condimentum, hendrerit lacus sed, scelerisque ipsum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nunc convallis vestibulum erat, quis porta tellus. <em>In lorem erat, sollicitudin varius posuere id, molestie ac eros</em>. Fusce luctus tellus vitae vulputate venenatis. Sed scelerisque bibendum interdum. Sed pretium commodo ultrices. Fusce luctus quam id porttitor vulputate. Integer ornare consectetur diam eget rutrum. Etiam eget sapien metus.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>my_std_normal &lt;- function(x) {  
+  exp(-x^2/2)/sqrt(2*pi)
+}
+</code></pre>
+</div>
 
-<p>Proin at libero id lorem fermentum elementum quis eget est.</p>
+<p>Standard normal</p>
 
-<ol>
-<li>Nam bibendum turpis massa, at accumsan justo fermentum ac.</li>
-<li>Nulla non nulla ut ante condimentum mattis vel at lectus.</li>
-<li>Etiam eget tortor tincidunt, iaculis ligula a, tristique massa. Fusce sed congue lorem, interdum sodales nisl.</li>
-</ol>
+<p>One of the simplest examples, is to estimate pi. <script type="math/tex">\pi</script> is used in the formula for the area of a circle (<script type="math/tex">Area = \pi * radius^2</script>). Since we’re really just interested in pi, we can choose a simple circle to work with and find its area. By the formula, a circle with a radius of 1 will give an area of of just <script type="math/tex">\pi</script>.</p>
 
-<p>Etiam consequat euismod ornare. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla pellentesque ipsum vulputate, pellentesque nisl vitae, lacinia sem. Praesent auctor felis et odio ultrices, nec tempor elit lobortis. Etiam ornare massa non risus luctus, id iaculis lacus egestas. Pellentesque massa dolor, mattis id lobortis eget, tristique vitae est.</p>
+<p>Now, if we place this circle in a square so that it inscribes the square (centered at 0,0), the square would have to be a 2 by 2 square (since the radius of our circle was 1). So the square would range from -1 to 1 in both the x and y axes.</p>
 
-<hr>
+<p>With this setup, we can start using monte carlo to estimate pi. To use monte carlo, we simply sample numbers. In this case, we can sample numbers between 0 and 1 (using a simple random number generator found in most programming languages). Suppose we do this a thousand times for the positive side and a thousand times for the negative side. If we keep track of all the points samples, we can record the number within the circle (<script type="math/tex">% <![CDATA[
+x^2 + y^2 < 1 %]]></script>). So, if we pretend we don’t know the formula for the area of a circle, we could say that it is</p>
 
-<p>Nam vulputate leo vitae libero vehicula, id tincidunt velit malesuada. In vel ornare nisi, id semper turpis. Vivamus erat elit, venenatis quis dui at, convallis suscipit sapien. Nunc in nisi scelerisque, aliquam mauris porttitor, facilisis ligula. Vestibulum cursus erat ac turpis bibendum, id pulvinar dolor dapibus. Proin vitae justo et velit imperdiet ultrices id id odio. Cras adipiscing ante vel mauris lobortis rutrum. Aenean eu felis est. In lacinia porttitor risus non sagittis.</p>
-
-<div class="highlight"><pre><span class="k">class</span> <span class="nc">Greeter</span>
-  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="vi">@message</span> <span class="o">=</span> <span class="n">message</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">greet</span>
-    <span class="nb">puts</span> <span class="n">message</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="n">john</span> <span class="o">=</span> <span class="no">Greeter</span><span class="o">.</span><span class="n">new</span> <span class="s1">&#39;Hello, World&#39;</span>
-
-<span class="n">john</span><span class="o">.</span><span class="n">greet</span>
-</pre></div>
-
-<p>Sed imperdiet interdum ultrices. Phasellus iaculis porttitor lorem nec scelerisque. Suspendisse eros urna, adipiscing vel luctus at, feugiat sit amet arcu. Aliquam porttitor ut urna pellentesque sagittis. Donec pellentesque venenatis diam sit amet cursus. Etiam luctus, metus quis gravida fermentum, tortor arcu consequat metus, eget viverra augue risus ac dui. Fusce faucibus scelerisque quam eu sagittis. Sed sit amet sapien non augue lobortis adipiscing. Sed sagittis at lectus eu tempus. Nulla non nulla ut ante condimentum mattis vel at lectus. Nulla ultricies dui et urna semper ultrices. Sed neque ante, dictum in dignissim luctus, facilisis ornare odio. Aenean tempor ultrices magna non pharetra. Curabitur vulputate nec est aliquet suscipit. Etiam ipsum sapien, dictum quis tristique vel, pretium at elit.</p>
 
         </div>
              
 	
-    	<span class="label label-default"><a href="/tags#Lorpem Ipsum-ref" title="View posts tagged with &quot;Lorpem Ipsum&quot;">Lorpem Ipsum</a></span>
-    
-    	<span class="label label-default"><a href="/tags#demo-ref" title="View posts tagged with &quot;demo&quot;">demo</a></span>
-    
+
+
+     </article>
+     <hr>
+  
+      <article>
+      <div class="heading"><a href="/post/Monte_carlo/">Monte Carlo</a></div>
+      <p class="meta"><a class="permalink" href="/post/Monte_carlo/">&#9679;</a> 12 Jan 2016</p>
+      <div>
+        <p>The concept of Monte Carlo estimation is simple and it’s a great demonstration of the laws of probability. Often times, it’s introduced by computing .</p>
+
+<p>Using Python, we can create a function to demonstrate the concept of estimating using the Monte Carlo method. The function creates a random 2 dimensional point in the ranges 0 to 1. If we treat this as a quarter of a full circle (with radius 1), we can use the pythagorean theorem to determine if the random point is inside or outside the quarter of the circle.</p>
+
+<p>If , then the random point is inside the circle. Otherwise, it’s outside. As we create more and more random points, we keep track of the number that fall inside the circle. Since we’re only using the first quadrant of the circle, the area is . Since we used a circle with radius of 1, this is just . So, the ratio of the number of points in the circle to the number of points generated approaches .</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">estimate_pi</span><span class="p">(</span><span class="no">N</span><span class="p">):</span>
+   <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">range</span><span class="p">(</span><span class="no">N</span><span class="p">):</span>
+      <span class="n">p1</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="nf">random</span><span class="p">();</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="nf">random</span><span class="p">()</span>
+      <span class="k">if</span> <span class="n">math</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">p1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+         <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+   <span class="k">return</span> <span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="n">count</span><span class="o">/</span><span class="n">float</span><span class="p">(</span><span class="no">N</span><span class="p">))</span></code></pre></figure>
+
+<p>Now we can call the function a few times with different values.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>estimate_pi(100)</th>
+      <th style="text-align: center">estimate_pi(100000)</th>
+      <th style="text-align: right">estimate_pi(100000000)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3.08000</td>
+      <td style="text-align: center">3.14755</td>
+      <td style="text-align: right">3.14156</td>
+    </tr>
+    <tr>
+      <td>3.04000</td>
+      <td style="text-align: center">3.14631</td>
+      <td style="text-align: right">3.14161</td>
+    </tr>
+    <tr>
+      <td>3.12000</td>
+      <td style="text-align: center">3.13276</td>
+      <td style="text-align: right">3.14172</td>
+    </tr>
+    <tr>
+      <td>3.24000</td>
+      <td style="text-align: center">3.14584</td>
+      <td style="text-align: right">3.14138</td>
+    </tr>
+    <tr>
+      <td>2.91999</td>
+      <td style="text-align: center">3.14596</td>
+      <td style="text-align: right">3.14154</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Is this useful for anything? Not really. There are much better ways to calculate . But, I think it is a good demonstration of the Monte Carlo concept. The same principal is used to calculate probability densities.</p>
+
+        </div>
+             
+	
+
+
+     </article>
+     <hr>
+  
+      <article>
+      <div class="heading"><a href="/post/Regression_ml/">Regression</a></div>
+      <p class="meta"><a class="permalink" href="/post/Regression_ml/">&#9679;</a> 02 Jan 2016</p>
+      <div>
+        <p>I’m a fan of the machine learning classes provided online by Stanford. I think it’s great that they provide high quality courses for free. Professor Andrew Ng does a great job of explaining core machine learning concepts. In some of the first lectures, he describes a machine learning framework using a linear regression model. The regression model is one of the most simple data models that exists. For a variable that is modeled by one variable, the linear regression model is simply a line (that includes slope and y-intercept coefficients, typically named with and respectively, in the statistics literature). When two variables model the output variable, the regression model is a plane. And so on.</p>
+
+<p>For the one variable case, the model is</p>
+
+<p>Typically with the simple linear regression model, the parameters are found analytically (using the method of least squares). But, to illustrate the machine learning framework described in the class, we’ll use a numerical optimization method typically used in machine learning.</p>
+
+<p>First, I grabbed some sample data that had a linear relationship from here.</p>
+
+<p>Using R, I simply type in the data. I added a column of 1’s to handle the intercept parameter</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">X</span> <span class="o">&lt;-</span> <span class="n">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">6</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">7</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">&lt;-</span> <span class="n">cbind</span><span class="p">(</span><span class="n">rep</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="n">length</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">&lt;-</span> <span class="n">c</span><span class="p">(</span><span class="m">300</span><span class="p">,</span><span class="m">300</span><span class="p">,</span><span class="m">500</span><span class="p">,</span><span class="m">400</span><span class="p">,</span><span class="m">700</span><span class="p">,</span><span class="m">400</span><span class="p">,</span><span class="m">100</span><span class="p">,</span><span class="m">250</span><span class="p">,</span><span class="m">450</span><span class="p">,</span><span class="m">650</span><span class="p">,</span><span class="m">600</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="m">150</span><span class="p">)</span></code></pre></figure>
+
+<p>Next, we define a model function that implements the linear model.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">model</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">data</span> <span class="o">%*%</span> <span class="n">weights</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Now, we just need to define the objective function (J).</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">objective</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">sum</span><span class="p">(</span> <span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="o">-</span> <span class="n">Y</span><span class="p">)</span><span class="o">^</span><span class="m">2</span> <span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Here’s where we differ from the ml class. Instead of gradient descent, we can use R’s built general purpose optimization function. A number of optimization algorithms are available in optim, but with this simple example, they should all give the same answer.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">op</span> <span class="o">&lt;-</span> <span class="n">optim</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">),</span> <span class="n">objective</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'BFGS'</span><span class="p">)</span></code></pre></figure>
+
+<p>That’s it. The optimized weights are in the R object called ‘op’. The y-intercept is 650.27 and the slope is -73.07. To verify the numbers, we can use R’s lm function.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">fit</span> <span class="o">&lt;-</span> <span class="n">lm</span><span class="p">(</span><span class="n">Y</span><span class="o">~</span><span class="n">X</span><span class="p">)</span></code></pre></figure>
+
+<p>The lm function returns the exact same values, 650.27 and -73.07.</p>
+
+<p>This same method could be used for logistic regression. We just change the model to the logit function (using appropriate data for logistic regression) and optimize again.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">model</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">dtv</span> <span class="o">=</span> <span class="n">data</span> <span class="o">%*%</span> <span class="n">weights</span>
+	<span class="n">exp</span><span class="p">(</span><span class="n">dtv</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="m">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="n">dtv</span><span class="p">))</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>It’s a toy example. A simple model like this isn’t much use in the real world, but it’s a start. More appropriate models can be used that might more realistically model data in higher dimensions. And possibly more efficient optimization algorithms could be used.</p>
+
+        </div>
+             
+	
 
 
      </article>
@@ -152,6 +335,8 @@ To add new posts, simply add a file in the <code>_posts</code> directory that fo
 <ul class="pager">
   
     
+      <li class="next"><a href="/page2">Older &rarr;</a></li>
+  
 </ul>
 </section>
 

@@ -1,0 +1,102 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" type="image/icon" href="/favicon.ico">
+
+<title>Monte Carlo Methods</title>
+
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/main.css">
+
+<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+</head>
+<body>
+
+
+<header>
+<div id="nav_container">
+<nav>
+
+  <ul>
+  <h1><a href="/">Little Big Blue</a></h1>
+    
+      
+      
+
+      <li class="">
+        <a class="" href="/about/">About</a>
+      </li>
+    
+      
+      
+
+      <li class="">
+        <a class="" href="/archives/">Archives</a>
+      </li>
+    
+      
+      
+
+      <li class="">
+        <a class="" href="/tags/">Tags</a>
+      </li>
+    
+  </ul>
+
+</nav>
+</div>
+</header>
+
+<section id="main">
+	<article>
+<div class="heading">Monte Carlo Methods</div>
+<p class="meta"><a class="permalink" href="">&#9679;</a> 22 Jan 2016</p>
+<p>Recently, I became interested in markov chain monte carlo (MCMC) methods. I have a Statistics degree and 
+a Computer Science degree, however, neither degree offered courses on MCMC. The more I learn about them, 
+the more I understand how they blur the lines between Stats and CS.</p>
+
+<p>What are they? Monte Carlo methods use random sampling to make statistical estimates. That’s pretty vague, but stick 
+with me. It’s all about making random samples, but you have to be smart about it. Where are you sampling from? 
+What samples should be included in your sample statistics? How do you generate efficient samples? If you would 
+like to explore an area of a particularly difficult density function, you don’t want to make all of your samples
+in one corner of the density.</p>
+
+<p>I think Wolfram Alpha is pretty cool. It’s an easy interface for some quick calculations. If weren’t sure
+what the intergal of a standard normal distribution from -1.96 to 1.96 was, we could put it in Wolfram Alpha:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>integrate e^(-x^2/2)/sqrt(2 pi) dx from -1.96 to 1.96
+</code></pre>
+</div>
+
+<p>Or in R, we could define a standard normal density function (or use dnorm for simplicity), and use 
+R’s <code class="highlighter-rouge">intergate</code> function:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>my_std_normal &lt;- function(x) {  
+  exp(-x^2/2)/sqrt(2*pi)
+}
+</code></pre>
+</div>
+
+<p>Standard normal</p>
+
+<p>One of the simplest examples, is to estimate pi. <script type="math/tex">\pi</script> is used in the formula for the area of a circle (<script type="math/tex">Area = \pi * radius^2</script>). Since we’re really just interested in pi, we can choose a simple circle to work with and find its area. By the formula, a circle with a radius of 1 will give an area of of just <script type="math/tex">\pi</script>.</p>
+
+<p>Now, if we place this circle in a square so that it inscribes the square (centered at 0,0), the square would have to be a 2 by 2 square (since the radius of our circle was 1). So the square would range from -1 to 1 in both the x and y axes.</p>
+
+<p>With this setup, we can start using monte carlo to estimate pi. To use monte carlo, we simply sample numbers. In this case, we can sample numbers between 0 and 1 (using a simple random number generator found in most programming languages). Suppose we do this a thousand times for the positive side and a thousand times for the negative side. If we keep track of all the points samples, we can record the number within the circle (<script type="math/tex">% <![CDATA[
+x^2 + y^2 < 1 %]]></script>). So, if we pretend we don’t know the formula for the area of a circle, we could say that it is</p>
+
+
+
+
+	
+
+</article>
+</section>
+
+</body>
+</html>
