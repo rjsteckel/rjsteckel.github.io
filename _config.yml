@@ -1,16 +1,16 @@
 # Jekyll Defaults
-title: Little Big Blue
-description: A small and simple site I made to test out Jekyll.
+title: Data, Beer, Stats
+description: Some thoughts about some of the best things in life, ... data, beer and stats
 baseurl: "" # the subpath of your site, e.g. /blog
 
 url: "http://localhost:3000"
-github: http://github.com/ITSJOHNCENA
+github: http://github.com/rjsteckel
 
 #markdown: redcarpet
 markdown: kramdown
 highlighter: rouge
 permalink: /post/:title/
-paginate: 4
+paginate: 2
 gems: [jekyll-paginate]
 paginate_path: "/page:num"
 rss_path: feed.xml

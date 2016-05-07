@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title></title>
-		<description>A small and simple site I made to test out Jekyll.</description>		
+		<description>Some thoughts about some of the best things in life, ... data, beer and stats</description>		
 		<link>http://localhost:3000</link>
 		<atom:link href="http://localhost:3000/feed.xml" rel="self" type="application/rss+xml" />
 		
