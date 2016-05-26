@@ -1,13 +1,13 @@
 ---
 layout: post
 title: Bayesian Kalman Filter
+tags: ["Kalman filter", Bayesian]
 ---
 
 
 A large contribution to Bayesian state space models was from Pole, West and Harrison. Both Petris and Durbin and Koopman reference this book as an authority for a Bayesian analysis of Gaussian state space models. Given the sequential/recursive nature of the Kalman filter, it fits nicely into a Bayesian approach. Thinking of the previous state distribution as a prior state distribution seems like an obvious choice. The subjective prior is less controversial here.
 
 In machine learning, the Kalman filter is often introduced as a graphical model. It is analogous to the Hidden Markov Model (HMM). Where an HMM has discrete states, the Kalman filter has continuous. Both assume discrete time steps. A directed graphical model shows the relationship between the hidden and observed states.
-
 
 
 We assume a Markov dependence between the nodes in the graph. Each state only depends on previous states. Here, the circles represent random variables. In the case of the Kalman filter, these are Gaussian. The shaded random variables are observable. While, the unshaded variables are latent or unobservable. An arrow between states indicates a dependence. A lack of an arrow represents a conditional independence between states. This is an important feature of the graph. It allows us to compute the joint distribution as a product of Gaussian distributions.
