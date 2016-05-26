@@ -54,51 +54,6 @@
 <section id="main">
 	  
       <article>
-      <div class="heading"><a href="/post/Homebrew_Intro/">Homebrew Introduction</a></div>
-      <p class="meta"><a class="permalink" href="/post/Homebrew_Intro/">&#9679;</a> 08 May 2016</p>
-      <div>
-        <!--<p>Brewing beer has been a hobby of mine for about two years now. It can be alot of working, yet fun at the same time. I</p>
--->
-		<p>Brewing beer has been a hobby of mine for about two years now. It can be alot of working, yet fun at the same time. I</p>
-
-        </div>
-             
-	
-    	<span class="label label-default"><a href="/tags#Beer-ref" title="View posts tagged with &quot;Beer&quot;">Beer</a></span>
-    
-    	<span class="label label-default"><a href="/tags#Homebrew-ref" title="View posts tagged with &quot;Homebrew&quot;">Homebrew</a></span>
-    
-
-
-     </article>
-     <hr>
-  
-      <article>
-      <div class="heading"><a href="/post/EM_Intro/">EM Introduction</a></div>
-      <p class="meta"><a class="permalink" href="/post/EM_Intro/">&#9679;</a> 07 May 2016</p>
-      <div>
-        <!--<p>EM is a, relatively, old algorithm for parameter inference when the observed data is incomplete. This typically means that a model structure is assumed, but some variables in the model that interact with observed variables must be inferred. The idea is built on basic theorem in probability, Jenson’s Inequality:</p>
-
-<p>For a convex function, f,</p>
-
-<p>f(E[X]) &lt; E[f(X)]</p>
-
-<p>So the expected value of a convex function is greater than the function evaluated at the expected value. The idea of EM is to use this iteratively. Estimate the parameter</p>
--->
-		<p>EM is a, relatively, old algorithm for parameter inference when the observed data is incomplete. This typically means that a model structure is assumed, but some variables in the model that interact with observed variables must be inferred. The idea is built on basic theorem in probability, Jenson’s Inequality:</p>
-
-
-        </div>
-             
-	
-    	<span class="label label-default"><a href="/tags#EM-ref" title="View posts tagged with &quot;EM&quot;">EM</a></span>
-    
-
-
-     </article>
-     <hr>
-  
-      <article>
       <div class="heading"><a href="/post/Kalman_bayesian/">Bayesian Kalman Filter</a></div>
       <p class="meta"><a class="permalink" href="/post/Kalman_bayesian/">&#9679;</a> 13 Apr 2016</p>
       <div>
@@ -205,6 +160,136 @@ K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
     
     	<span class="label label-default"><a href="/tags#Bayesian-ref" title="View posts tagged with &quot;Bayesian&quot;">Bayesian</a></span>
     
+
+
+     </article>
+     <hr>
+  
+      <article>
+      <div class="heading"><a href="/post/Monte_carlo/">Monte Carlo</a></div>
+      <p class="meta"><a class="permalink" href="/post/Monte_carlo/">&#9679;</a> 12 Jan 2016</p>
+      <div>
+        <!--<p>The concept of Monte Carlo estimation is simple and it’s a great demonstration of the laws of probability. Often times, it’s introduced by computing .</p>
+
+<p>Using Python, we can create a function to demonstrate the concept of estimating using the Monte Carlo method. The function creates a random 2 dimensional point in the ranges 0 to 1. If we treat this as a quarter of a full circle (with radius 1), we can use the pythagorean theorem to determine if the random point is inside or outside the quarter of the circle.</p>
+
+<p>If , then the random point is inside the circle. Otherwise, it’s outside. As we create more and more random points, we keep track of the number that fall inside the circle. Since we’re only using the first quadrant of the circle, the area is . Since we used a circle with radius of 1, this is just . So, the ratio of the number of points in the circle to the number of points generated approaches .</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">estimate_pi</span><span class="p">(</span><span class="no">N</span><span class="p">):</span>
+   <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">range</span><span class="p">(</span><span class="no">N</span><span class="p">):</span>
+      <span class="n">p1</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="nf">random</span><span class="p">();</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="nf">random</span><span class="p">()</span>
+      <span class="k">if</span> <span class="n">math</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">p1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+         <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+   <span class="k">return</span> <span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="n">count</span><span class="o">/</span><span class="n">float</span><span class="p">(</span><span class="no">N</span><span class="p">))</span></code></pre></figure>
+
+<p>Now we can call the function a few times with different values.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>estimate_pi(100)</th>
+      <th style="text-align: center">estimate_pi(100000)</th>
+      <th style="text-align: right">estimate_pi(100000000)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3.08000</td>
+      <td style="text-align: center">3.14755</td>
+      <td style="text-align: right">3.14156</td>
+    </tr>
+    <tr>
+      <td>3.04000</td>
+      <td style="text-align: center">3.14631</td>
+      <td style="text-align: right">3.14161</td>
+    </tr>
+    <tr>
+      <td>3.12000</td>
+      <td style="text-align: center">3.13276</td>
+      <td style="text-align: right">3.14172</td>
+    </tr>
+    <tr>
+      <td>3.24000</td>
+      <td style="text-align: center">3.14584</td>
+      <td style="text-align: right">3.14138</td>
+    </tr>
+    <tr>
+      <td>2.91999</td>
+      <td style="text-align: center">3.14596</td>
+      <td style="text-align: right">3.14154</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Is this useful for anything? Not really. There are much better ways to calculate . But, I think it is a good demonstration of the Monte Carlo concept. The same principal is used to calculate probability densities.</p>
+-->
+		<p>The concept of Monte Carlo estimation is simple and it’s a great demonstration of the laws of probability. Often times, it’s introduced by computing .</p>
+
+
+        </div>
+             
+	
+
+
+     </article>
+     <hr>
+  
+      <article>
+      <div class="heading"><a href="/post/Regression_ml/">Regression</a></div>
+      <p class="meta"><a class="permalink" href="/post/Regression_ml/">&#9679;</a> 02 Jan 2016</p>
+      <div>
+        <!--<p>I’m a fan of the machine learning classes provided online by Stanford. I think it’s great that they provide high quality courses for free. Professor Andrew Ng does a great job of explaining core machine learning concepts. In some of the first lectures, he describes a machine learning framework using a linear regression model. The regression model is one of the most simple data models that exists. For a variable that is modeled by one variable, the linear regression model is simply a line (that includes slope and y-intercept coefficients, typically named with and respectively, in the statistics literature). When two variables model the output variable, the regression model is a plane. And so on.</p>
+
+<p>For the one variable case, the model is</p>
+
+<p>Typically with the simple linear regression model, the parameters are found analytically (using the method of least squares). But, to illustrate the machine learning framework described in the class, we’ll use a numerical optimization method typically used in machine learning.</p>
+
+<p>First, I grabbed some sample data that had a linear relationship from here.</p>
+
+<p>Using R, I simply type in the data. I added a column of 1’s to handle the intercept parameter</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">X</span> <span class="o">&lt;-</span> <span class="n">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">6</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">7</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">&lt;-</span> <span class="n">cbind</span><span class="p">(</span><span class="n">rep</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="n">length</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">&lt;-</span> <span class="n">c</span><span class="p">(</span><span class="m">300</span><span class="p">,</span><span class="m">300</span><span class="p">,</span><span class="m">500</span><span class="p">,</span><span class="m">400</span><span class="p">,</span><span class="m">700</span><span class="p">,</span><span class="m">400</span><span class="p">,</span><span class="m">100</span><span class="p">,</span><span class="m">250</span><span class="p">,</span><span class="m">450</span><span class="p">,</span><span class="m">650</span><span class="p">,</span><span class="m">600</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="m">150</span><span class="p">)</span></code></pre></figure>
+
+<p>Next, we define a model function that implements the linear model.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">model</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">data</span> <span class="o">%*%</span> <span class="n">weights</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Now, we just need to define the objective function (J).</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">objective</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">sum</span><span class="p">(</span> <span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="o">-</span> <span class="n">Y</span><span class="p">)</span><span class="o">^</span><span class="m">2</span> <span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Here’s where we differ from the ml class. Instead of gradient descent, we can use R’s built general purpose optimization function. A number of optimization algorithms are available in optim, but with this simple example, they should all give the same answer.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">op</span> <span class="o">&lt;-</span> <span class="n">optim</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">),</span> <span class="n">objective</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'BFGS'</span><span class="p">)</span></code></pre></figure>
+
+<p>That’s it. The optimized weights are in the R object called ‘op’. The y-intercept is 650.27 and the slope is -73.07. To verify the numbers, we can use R’s lm function.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">fit</span> <span class="o">&lt;-</span> <span class="n">lm</span><span class="p">(</span><span class="n">Y</span><span class="o">~</span><span class="n">X</span><span class="p">)</span></code></pre></figure>
+
+<p>The lm function returns the exact same values, 650.27 and -73.07.</p>
+
+<p>This same method could be used for logistic regression. We just change the model to the logit function (using appropriate data for logistic regression) and optimize again.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">model</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">dtv</span> <span class="o">=</span> <span class="n">data</span> <span class="o">%*%</span> <span class="n">weights</span>
+	<span class="n">exp</span><span class="p">(</span><span class="n">dtv</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="m">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="n">dtv</span><span class="p">))</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>It’s a toy example. A simple model like this isn’t much use in the real world, but it’s a start. More appropriate models can be used that might more realistically model data in higher dimensions. And possibly more efficient optimization algorithms could be used.</p>
+-->
+		<p>I’m a fan of the machine learning classes provided online by Stanford. I think it’s great that they provide high quality courses for free. Professor Andrew Ng does a great job of explaining core machine learning concepts. In some of the first lectures, he describes a machine learning framework using a linear regression model. The regression model is one of the most simple data models that exists. For a variable that is modeled by one variable, the linear regression model is simply a line (that includes slope and y-intercept coefficients, typically named with and respectively, in the statistics literature). When two variables model the output variable, the regression model is a plane. And so on.</p>
+
+
+        </div>
+             
+	
 
 
      </article>

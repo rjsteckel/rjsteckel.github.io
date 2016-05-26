@@ -7,30 +7,6 @@
 		<atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
-				<title>Homebrew Introduction</title>
-				<description>&lt;p&gt;Brewing beer has been a hobby of mine for about two years now. It can be alot of working, yet fun at the same time. I&lt;/p&gt;
-</description>
-				<pubDate>Sun, 08 May 2016 00:00:00 -0500</pubDate>
-				<link>http://localhost:4000/post/Homebrew_Intro/</link>
-				<guid isPermaLink="true">http://localhost:4000/post/Homebrew_Intro/</guid>
-			</item>
-		
-			<item>
-				<title>EM Introduction</title>
-				<description>&lt;p&gt;EM is a, relatively, old algorithm for parameter inference when the observed data is incomplete. This typically means that a model structure is assumed, but some variables in the model that interact with observed variables must be inferred. The idea is built on basic theorem in probability, Jenson’s Inequality:&lt;/p&gt;
-
-&lt;p&gt;For a convex function, f,&lt;/p&gt;
-
-&lt;p&gt;f(E[X]) &amp;lt; E[f(X)]&lt;/p&gt;
-
-&lt;p&gt;So the expected value of a convex function is greater than the function evaluated at the expected value. The idea of EM is to use this iteratively. Estimate the parameter&lt;/p&gt;
-</description>
-				<pubDate>Sat, 07 May 2016 00:00:00 -0500</pubDate>
-				<link>http://localhost:4000/post/EM_Intro/</link>
-				<guid isPermaLink="true">http://localhost:4000/post/EM_Intro/</guid>
-			</item>
-		
-			<item>
 				<title>Bayesian Kalman Filter</title>
 				<description>&lt;p&gt;A large contribution to Bayesian state space models was from Pole, West and Harrison. Both Petris and Durbin and Koopman reference this book as an authority for a Bayesian analysis of Gaussian state space models. Given the sequential/recursive nature of the Kalman filter, it fits nicely into a Bayesian approach. Thinking of the previous state distribution as a prior state distribution seems like an obvious choice. The subjective prior is less controversial here.&lt;/p&gt;
 

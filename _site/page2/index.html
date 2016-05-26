@@ -54,136 +54,6 @@
 <section id="main">
 	  
       <article>
-      <div class="heading"><a href="/post/Monte_carlo/">Monte Carlo</a></div>
-      <p class="meta"><a class="permalink" href="/post/Monte_carlo/">&#9679;</a> 12 Jan 2016</p>
-      <div>
-        <!--<p>The concept of Monte Carlo estimation is simple and it’s a great demonstration of the laws of probability. Often times, it’s introduced by computing .</p>
-
-<p>Using Python, we can create a function to demonstrate the concept of estimating using the Monte Carlo method. The function creates a random 2 dimensional point in the ranges 0 to 1. If we treat this as a quarter of a full circle (with radius 1), we can use the pythagorean theorem to determine if the random point is inside or outside the quarter of the circle.</p>
-
-<p>If , then the random point is inside the circle. Otherwise, it’s outside. As we create more and more random points, we keep track of the number that fall inside the circle. Since we’re only using the first quadrant of the circle, the area is . Since we used a circle with radius of 1, this is just . So, the ratio of the number of points in the circle to the number of points generated approaches .</p>
-
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">estimate_pi</span><span class="p">(</span><span class="no">N</span><span class="p">):</span>
-   <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-   <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">range</span><span class="p">(</span><span class="no">N</span><span class="p">):</span>
-      <span class="n">p1</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="nf">random</span><span class="p">();</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="nf">random</span><span class="p">()</span>
-      <span class="k">if</span> <span class="n">math</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">p1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-         <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
-   <span class="k">return</span> <span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="n">count</span><span class="o">/</span><span class="n">float</span><span class="p">(</span><span class="no">N</span><span class="p">))</span></code></pre></figure>
-
-<p>Now we can call the function a few times with different values.</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>estimate_pi(100)</th>
-      <th style="text-align: center">estimate_pi(100000)</th>
-      <th style="text-align: right">estimate_pi(100000000)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>3.08000</td>
-      <td style="text-align: center">3.14755</td>
-      <td style="text-align: right">3.14156</td>
-    </tr>
-    <tr>
-      <td>3.04000</td>
-      <td style="text-align: center">3.14631</td>
-      <td style="text-align: right">3.14161</td>
-    </tr>
-    <tr>
-      <td>3.12000</td>
-      <td style="text-align: center">3.13276</td>
-      <td style="text-align: right">3.14172</td>
-    </tr>
-    <tr>
-      <td>3.24000</td>
-      <td style="text-align: center">3.14584</td>
-      <td style="text-align: right">3.14138</td>
-    </tr>
-    <tr>
-      <td>2.91999</td>
-      <td style="text-align: center">3.14596</td>
-      <td style="text-align: right">3.14154</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>Is this useful for anything? Not really. There are much better ways to calculate . But, I think it is a good demonstration of the Monte Carlo concept. The same principal is used to calculate probability densities.</p>
--->
-		<p>The concept of Monte Carlo estimation is simple and it’s a great demonstration of the laws of probability. Often times, it’s introduced by computing .</p>
-
-
-        </div>
-             
-	
-
-
-     </article>
-     <hr>
-  
-      <article>
-      <div class="heading"><a href="/post/Regression_ml/">Regression</a></div>
-      <p class="meta"><a class="permalink" href="/post/Regression_ml/">&#9679;</a> 02 Jan 2016</p>
-      <div>
-        <!--<p>I’m a fan of the machine learning classes provided online by Stanford. I think it’s great that they provide high quality courses for free. Professor Andrew Ng does a great job of explaining core machine learning concepts. In some of the first lectures, he describes a machine learning framework using a linear regression model. The regression model is one of the most simple data models that exists. For a variable that is modeled by one variable, the linear regression model is simply a line (that includes slope and y-intercept coefficients, typically named with and respectively, in the statistics literature). When two variables model the output variable, the regression model is a plane. And so on.</p>
-
-<p>For the one variable case, the model is</p>
-
-<p>Typically with the simple linear regression model, the parameters are found analytically (using the method of least squares). But, to illustrate the machine learning framework described in the class, we’ll use a numerical optimization method typically used in machine learning.</p>
-
-<p>First, I grabbed some sample data that had a linear relationship from here.</p>
-
-<p>Using R, I simply type in the data. I added a column of 1’s to handle the intercept parameter</p>
-
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">X</span> <span class="o">&lt;-</span> <span class="n">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">6</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">7</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">&lt;-</span> <span class="n">cbind</span><span class="p">(</span><span class="n">rep</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="n">length</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">X</span><span class="p">)</span>
-<span class="n">Y</span> <span class="o">&lt;-</span> <span class="n">c</span><span class="p">(</span><span class="m">300</span><span class="p">,</span><span class="m">300</span><span class="p">,</span><span class="m">500</span><span class="p">,</span><span class="m">400</span><span class="p">,</span><span class="m">700</span><span class="p">,</span><span class="m">400</span><span class="p">,</span><span class="m">100</span><span class="p">,</span><span class="m">250</span><span class="p">,</span><span class="m">450</span><span class="p">,</span><span class="m">650</span><span class="p">,</span><span class="m">600</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="m">150</span><span class="p">)</span></code></pre></figure>
-
-<p>Next, we define a model function that implements the linear model.</p>
-
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">model</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="p">{</span>
-   <span class="n">data</span> <span class="o">%*%</span> <span class="n">weights</span>
-<span class="p">}</span></code></pre></figure>
-
-<p>Now, we just need to define the objective function (J).</p>
-
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">objective</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
-   <span class="n">sum</span><span class="p">(</span> <span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="o">-</span> <span class="n">Y</span><span class="p">)</span><span class="o">^</span><span class="m">2</span> <span class="p">)</span>
-<span class="p">}</span></code></pre></figure>
-
-<p>Here’s where we differ from the ml class. Instead of gradient descent, we can use R’s built general purpose optimization function. A number of optimization algorithms are available in optim, but with this simple example, they should all give the same answer.</p>
-
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">op</span> <span class="o">&lt;-</span> <span class="n">optim</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">),</span> <span class="n">objective</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'BFGS'</span><span class="p">)</span></code></pre></figure>
-
-<p>That’s it. The optimized weights are in the R object called ‘op’. The y-intercept is 650.27 and the slope is -73.07. To verify the numbers, we can use R’s lm function.</p>
-
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">fit</span> <span class="o">&lt;-</span> <span class="n">lm</span><span class="p">(</span><span class="n">Y</span><span class="o">~</span><span class="n">X</span><span class="p">)</span></code></pre></figure>
-
-<p>The lm function returns the exact same values, 650.27 and -73.07.</p>
-
-<p>This same method could be used for logistic regression. We just change the model to the logit function (using appropriate data for logistic regression) and optimize again.</p>
-
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">model</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="p">{</span>
-	<span class="n">dtv</span> <span class="o">=</span> <span class="n">data</span> <span class="o">%*%</span> <span class="n">weights</span>
-	<span class="n">exp</span><span class="p">(</span><span class="n">dtv</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="m">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="n">dtv</span><span class="p">))</span>
-<span class="p">}</span></code></pre></figure>
-
-<p>It’s a toy example. A simple model like this isn’t much use in the real world, but it’s a start. More appropriate models can be used that might more realistically model data in higher dimensions. And possibly more efficient optimization algorithms could be used.</p>
--->
-		<p>I’m a fan of the machine learning classes provided online by Stanford. I think it’s great that they provide high quality courses for free. Professor Andrew Ng does a great job of explaining core machine learning concepts. In some of the first lectures, he describes a machine learning framework using a linear regression model. The regression model is one of the most simple data models that exists. For a variable that is modeled by one variable, the linear regression model is simply a line (that includes slope and y-intercept coefficients, typically named with and respectively, in the statistics literature). When two variables model the output variable, the regression model is a plane. And so on.</p>
-
-
-        </div>
-             
-	
-
-
-     </article>
-     <hr>
-  
-      <article>
       <div class="heading"><a href="/post/Kalman_dlm/">Kalman DLMs</a></div>
       <p class="meta"><a class="permalink" href="/post/Kalman_dlm/">&#9679;</a> 28 Dec 2015</p>
       <div>
@@ -252,6 +122,35 @@ Click to enlarge</p>
      </article>
      <hr>
   
+      <article>
+      <div class="heading"><a href="/post/Kalman_statespace/">Kalman State Space</a></div>
+      <p class="meta"><a class="permalink" href="/post/Kalman_statespace/">&#9679;</a> 22 Dec 2015</p>
+      <div>
+        <!--<p>Kalman filtering is a popular tool for adaptive estimation of time-series through noisy measurements. Initially, Kalman filtering started in electrical engineering, but it has found its way into economics, machine learning, finance and many other fields. In 1960 R.E. Kalman wrote a paper that expanded Wiener filtering to include state space methods and perform on-line, recursive computations versus a batch analysis. He proposed a new state space methods (introduced by Claude Shannon) to extend the Weiner-Hopf integral for stochastic processes.</p>
+
+<p>Kalman filtering estimates what the optimal values of a measurement should be given noisy measurements. These estimates can also then be used for Kalman smoothing and forecasting. Part of the power of the Kalman Filter is the generality. Higher order modeling equations can be broken down into multiple first order equations. But before filtering the data, a state space model that defines the dynamics of the system is required. Once the correct state space model is defined, the Kalman filter application is straight-forward to apply. Because it is possible to define time-variant state space models, they are quite flexible, even when non-stationarity exists. Besides defining the state space equation, a second difficulty is estimating the parameters for the model. However, these are typically solved numerically and come with their own difficulties, but because the Kalman filtering model is Gaussian, standard MLE estimates of the Gaussian likelihood can be used.</p>
+
+<p>The state space model defines the underlying dynamics of the system. Often times, it can be difficult to define the correct state space model when using the Kalman filter. Typically, domain knowledge must be incorporated into the state space model for good performance. State space model literature usually begins with a model called the local level model. This is one of the simplest state space models (with no trend or seasonality), but it is applied quite often.</p>
+
+<p>Autoregressive (AR) and moving average (MA) models can be considered a subset of state space methods. Both of these models can be encoded in state space equations. Unlike ARMA models, state space models do not require that non-stationary time series be transformed using differencing.</p>
+
+<p>Here the and matrices are assumed to be known during filtering. Often they are time invariant and the subscript is dropped. These matrices can be used for deterministic transformations on the state. These can allow the Kalman filter to model more complicated systems that have seasonal and periodic behavior.</p>
+
+<p>However, before we could proceed to use this model, we would need a few parameters first. First, we need the variance parameters. Since the Kalman filter makes the assumption of zero mean Gaussian noise terms, a fairly straight forward likelihood function can be found. Once, we have a likelihood, we can numerically estimate the variance parameters (described later). But besides the variances parameters, we also need initial values to begin the recursive computations. The first estimates of the Kalman filter are typically poor and have a large error. So, less work is put into computing good starting values. In fact, often they are chosen to be 1. The adaptive nature of the Kalman filter quickly adapts to computing optimal values. Some other assumptions are required as well. The Kalman filter assumes that the variances parameters are uncorrelated each other, as well as, contain no autocorrelation. It also assumes that the variance parameters are uncorrelated with the initial values.</p>
+
+<p>In the next post, I’ll look at the actual filtering equations.</p>
+-->
+		<p>Kalman filtering is a popular tool for adaptive estimation of time-series through noisy measurements. Initially, Kalman filtering started in electrical engineering, but it has found its way into economics, machine learning, finance and many other fields. In 1960 R.E. Kalman wrote a paper that expanded Wiener filtering to include state space methods and perform on-line, recursive computations versus a batch analysis. He proposed a new state space methods (introduced by Claude Shannon) to extend the Weiner-Hopf integral for stochastic processes.</p>
+
+
+        </div>
+             
+	
+
+
+     </article>
+     <hr>
+  
 
 
 <ul class="pager">
@@ -259,8 +158,6 @@ Click to enlarge</p>
       <li class="previous"><a href="/">&larr; Newer</a></li>
   
     
-      <li class="next"><a href="/page3">Older &rarr;</a></li>
-  
 </ul>
 </section>
 
