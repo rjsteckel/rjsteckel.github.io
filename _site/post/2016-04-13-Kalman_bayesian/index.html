@@ -1,60 +1,3 @@
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="icon" type="image/icon" href="/favicon.ico">
-
-<title>Bayesian Kalman Filter</title>
-
-<link rel="stylesheet" href="/css/syntax.css">
-<link rel="stylesheet" href="/css/main.css">
-
-<script type="text/javascript"
-    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
-</head>
-<body>
-
-
-<header>
-<div id="nav_container">
-<nav>
-
-  <ul>
-  <h1><a href="/">Data, Beer, and Stats</a></h1>
-    
-      
-      
-
-      <li class="">
-        <a class="" href="/about/">About</a>
-      </li>
-    
-      
-      
-
-      <li class="">
-        <a class="" href="/archives/">Archives</a>
-      </li>
-    
-      
-      
-
-      <li class="">
-        <a class="" href="/tags/">Tags</a>
-      </li>
-    
-  </ul>
-
-</nav>
-</div>
-</header>
-
-<section id="main">
-	<article>
-<div class="heading">Bayesian Kalman Filter</div>
-<p class="meta"><a class="permalink" href="">&#9679;</a> 13 Apr 2016</p>
 <p>A large contribution to Bayesian state space models was from Pole, West and Harrison. Both Petris and Durbin and Koopman reference this book as an authority for a Bayesian analysis of Gaussian state space models. Given the sequential/recursive nature of the Kalman filter, it fits nicely into a Bayesian approach. Thinking of the previous state distribution as a prior state distribution seems like an obvious choice. The subjective prior is less controversial here.</p>
 
 <p>In machine learning, the Kalman filter is often introduced as a graphical model. It is analogous to the Hidden Markov Model (HMM). Where an HMM has discrete states, the Kalman filter has continuous. Both assume discrete time steps. A directed graphical model shows the relationship between the hidden and observed states.</p>
@@ -147,17 +90,3 @@ K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
 <p>This factor, is called the Kalman gain. There will be more weight when we are more uncertain about the prediction. The Kalman gain is what makes the Kalman filter adaptive. It determines how much we “trust” the observations. Therefore, it determines how much to correct them. The smaller is with respect to , the bigger the correction.</p>
 
 <p>I highly recommend Petris if you are interested in learning more about Kalman Filtering (and you are familiar with R).</p>
-
-
-
-	
-    	<span class="label label-default"><a href="/tags#Kalman filter-ref" title="View posts tagged with &quot;Kalman filter&quot;">Kalman filter</a></span>
-    
-    	<span class="label label-default"><a href="/tags#Bayesian-ref" title="View posts tagged with &quot;Bayesian&quot;">Bayesian</a></span>
-    
-
-</article>
-</section>
-
-</body>
-</html>

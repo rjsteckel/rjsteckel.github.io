@@ -3,8 +3,32 @@
 	<channel>
 		<title></title>
 		<description>Some thoughts about some of the best things in life, ... data, beer and stats</description>		
-		<link>http://localhost:3000</link>
-		<atom:link href="http://localhost:3000/feed.xml" rel="self" type="application/rss+xml" />
+		<link>http://localhost:4000</link>
+		<atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Homebrew Introduction</title>
+				<description>&lt;p&gt;Brewing beer has been a hobby of mine for about two years now. It can be alot of working, yet fun at the same time. I&lt;/p&gt;
+</description>
+				<pubDate>Sun, 08 May 2016 00:00:00 -0500</pubDate>
+				<link>http://localhost:4000/post/Homebrew_Intro/</link>
+				<guid isPermaLink="true">http://localhost:4000/post/Homebrew_Intro/</guid>
+			</item>
+		
+			<item>
+				<title>EM Introduction</title>
+				<description>&lt;p&gt;EM is a, relatively, old algorithm for parameter inference when the observed data is incomplete. This typically means that a model structure is assumed, but some variables in the model that interact with observed variables must be inferred. The idea is built on basic theorem in probability, Jenson’s Inequality:&lt;/p&gt;
+
+&lt;p&gt;For a convex function, f,&lt;/p&gt;
+
+&lt;p&gt;f(E[X]) &amp;lt; E[f(X)]&lt;/p&gt;
+
+&lt;p&gt;So the expected value of a convex function is greater than the function evaluated at the expected value. The idea of EM is to use this iteratively. Estimate the parameter&lt;/p&gt;
+</description>
+				<pubDate>Sat, 07 May 2016 00:00:00 -0500</pubDate>
+				<link>http://localhost:4000/post/EM_Intro/</link>
+				<guid isPermaLink="true">http://localhost:4000/post/EM_Intro/</guid>
+			</item>
 		
 			<item>
 				<title>Bayesian Kalman Filter</title>
@@ -102,51 +126,8 @@ K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
 &lt;p&gt;I highly recommend Petris if you are interested in learning more about Kalman Filtering (and you are familiar with R).&lt;/p&gt;
 </description>
 				<pubDate>Wed, 13 Apr 2016 00:00:00 -0500</pubDate>
-				<link>http://localhost:3000/post/Kalman_bayesian/</link>
-				<guid isPermaLink="true">http://localhost:3000/post/Kalman_bayesian/</guid>
-			</item>
-		
-			<item>
-				<title>Monte Carlo Methods</title>
-				<description>&lt;p&gt;Recently, I became interested in markov chain monte carlo (MCMC) methods. I have a Statistics degree and 
-a Computer Science degree, however, neither degree offered courses on MCMC. The more I learn about them, 
-the more I understand how they blur the lines between Stats and CS.&lt;/p&gt;
-
-&lt;p&gt;What are they? Monte Carlo methods use random sampling to make statistical estimates. That’s pretty vague, but stick 
-with me. It’s all about making random samples, but you have to be smart about it. Where are you sampling from? 
-What samples should be included in your sample statistics? How do you generate efficient samples? If you would 
-like to explore an area of a particularly difficult density function, you don’t want to make all of your samples
-in one corner of the density.&lt;/p&gt;
-
-&lt;p&gt;I think Wolfram Alpha is pretty cool. It’s an easy interface for some quick calculations. If weren’t sure
-what the intergal of a standard normal distribution from -1.96 to 1.96 was, we could put it in Wolfram Alpha:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;integrate e^(-x^2/2)/sqrt(2 pi) dx from -1.96 to 1.96
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Or in R, we could define a standard normal density function (or use dnorm for simplicity), and use 
-R’s &lt;code class=&quot;highlighter-rouge&quot;&gt;intergate&lt;/code&gt; function:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;my_std_normal &amp;lt;- function(x) {  
-  exp(-x^2/2)/sqrt(2*pi)
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Standard normal&lt;/p&gt;
-
-&lt;p&gt;One of the simplest examples, is to estimate pi. &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; is used in the formula for the area of a circle (&lt;script type=&quot;math/tex&quot;&gt;Area = \pi * radius^2&lt;/script&gt;). Since we’re really just interested in pi, we can choose a simple circle to work with and find its area. By the formula, a circle with a radius of 1 will give an area of of just &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt;.&lt;/p&gt;
-
-&lt;p&gt;Now, if we place this circle in a square so that it inscribes the square (centered at 0,0), the square would have to be a 2 by 2 square (since the radius of our circle was 1). So the square would range from -1 to 1 in both the x and y axes.&lt;/p&gt;
-
-&lt;p&gt;With this setup, we can start using monte carlo to estimate pi. To use monte carlo, we simply sample numbers. In this case, we can sample numbers between 0 and 1 (using a simple random number generator found in most programming languages). Suppose we do this a thousand times for the positive side and a thousand times for the negative side. If we keep track of all the points samples, we can record the number within the circle (&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-x^2 + y^2 &lt; 1 %]]&gt;&lt;/script&gt;). So, if we pretend we don’t know the formula for the area of a circle, we could say that it is&lt;/p&gt;
-
-</description>
-				<pubDate>Fri, 22 Jan 2016 00:00:00 -0600</pubDate>
-				<link>http://localhost:3000/post/MonteCarlo/</link>
-				<guid isPermaLink="true">http://localhost:3000/post/MonteCarlo/</guid>
+				<link>http://localhost:4000/post/Kalman_bayesian/</link>
+				<guid isPermaLink="true">http://localhost:4000/post/Kalman_bayesian/</guid>
 			</item>
 		
 			<item>
@@ -207,8 +188,8 @@ x^2 + y^2 &lt; 1 %]]&gt;&lt;/script&gt;). So, if we pretend we don’t know the 
 &lt;p&gt;Is this useful for anything? Not really. There are much better ways to calculate . But, I think it is a good demonstration of the Monte Carlo concept. The same principal is used to calculate probability densities.&lt;/p&gt;
 </description>
 				<pubDate>Tue, 12 Jan 2016 00:00:00 -0600</pubDate>
-				<link>http://localhost:3000/post/Monte_carlo/</link>
-				<guid isPermaLink="true">http://localhost:3000/post/Monte_carlo/</guid>
+				<link>http://localhost:4000/post/Monte_carlo/</link>
+				<guid isPermaLink="true">http://localhost:4000/post/Monte_carlo/</guid>
 			</item>
 		
 			<item>
@@ -259,8 +240,8 @@ x^2 + y^2 &lt; 1 %]]&gt;&lt;/script&gt;). So, if we pretend we don’t know the 
 &lt;p&gt;It’s a toy example. A simple model like this isn’t much use in the real world, but it’s a start. More appropriate models can be used that might more realistically model data in higher dimensions. And possibly more efficient optimization algorithms could be used.&lt;/p&gt;
 </description>
 				<pubDate>Sat, 02 Jan 2016 00:00:00 -0600</pubDate>
-				<link>http://localhost:3000/post/Regression_ml/</link>
-				<guid isPermaLink="true">http://localhost:3000/post/Regression_ml/</guid>
+				<link>http://localhost:4000/post/Regression_ml/</link>
+				<guid isPermaLink="true">http://localhost:4000/post/Regression_ml/</guid>
 			</item>
 		
 			<item>
@@ -320,8 +301,8 @@ Click to enlarge&lt;/p&gt;
 &lt;p&gt;This experimentation is time consuming. But once the state space model is chosen and the parameters are found, you have a powerful model for estimating, smoothing and forecasting.&lt;/p&gt;
 </description>
 				<pubDate>Mon, 28 Dec 2015 00:00:00 -0600</pubDate>
-				<link>http://localhost:3000/post/Kalman_dlm/</link>
-				<guid isPermaLink="true">http://localhost:3000/post/Kalman_dlm/</guid>
+				<link>http://localhost:4000/post/Kalman_dlm/</link>
+				<guid isPermaLink="true">http://localhost:4000/post/Kalman_dlm/</guid>
 			</item>
 		
 			<item>
@@ -341,8 +322,8 @@ Click to enlarge&lt;/p&gt;
 &lt;p&gt;In the next post, I’ll look at the actual filtering equations.&lt;/p&gt;
 </description>
 				<pubDate>Tue, 22 Dec 2015 00:00:00 -0600</pubDate>
-				<link>http://localhost:3000/post/Kalman_statespace/</link>
-				<guid isPermaLink="true">http://localhost:3000/post/Kalman_statespace/</guid>
+				<link>http://localhost:4000/post/Kalman_statespace/</link>
+				<guid isPermaLink="true">http://localhost:4000/post/Kalman_statespace/</guid>
 			</item>
 		
 	</channel>

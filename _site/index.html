@@ -22,7 +22,7 @@
 <nav>
 
   <ul>
-  <h1><a href="/">Data, Beer, Statistics</a></h1>
+  <h1><a href="/">Data, Beer, and Stats</a></h1>
     
       
       
@@ -54,10 +54,55 @@
 <section id="main">
 	  
       <article>
+      <div class="heading"><a href="/post/Homebrew_Intro/">Homebrew Introduction</a></div>
+      <p class="meta"><a class="permalink" href="/post/Homebrew_Intro/">&#9679;</a> 08 May 2016</p>
+      <div>
+        <!--<p>Brewing beer has been a hobby of mine for about two years now. It can be alot of working, yet fun at the same time. I</p>
+-->
+		<p>Brewing beer has been a hobby of mine for about two years now. It can be alot of working, yet fun at the same time. I</p>
+
+        </div>
+             
+	
+    	<span class="label label-default"><a href="/tags#Beer-ref" title="View posts tagged with &quot;Beer&quot;">Beer</a></span>
+    
+    	<span class="label label-default"><a href="/tags#Homebrew-ref" title="View posts tagged with &quot;Homebrew&quot;">Homebrew</a></span>
+    
+
+
+     </article>
+     <hr>
+  
+      <article>
+      <div class="heading"><a href="/post/EM_Intro/">EM Introduction</a></div>
+      <p class="meta"><a class="permalink" href="/post/EM_Intro/">&#9679;</a> 07 May 2016</p>
+      <div>
+        <!--<p>EM is a, relatively, old algorithm for parameter inference when the observed data is incomplete. This typically means that a model structure is assumed, but some variables in the model that interact with observed variables must be inferred. The idea is built on basic theorem in probability, Jenson’s Inequality:</p>
+
+<p>For a convex function, f,</p>
+
+<p>f(E[X]) &lt; E[f(X)]</p>
+
+<p>So the expected value of a convex function is greater than the function evaluated at the expected value. The idea of EM is to use this iteratively. Estimate the parameter</p>
+-->
+		<p>EM is a, relatively, old algorithm for parameter inference when the observed data is incomplete. This typically means that a model structure is assumed, but some variables in the model that interact with observed variables must be inferred. The idea is built on basic theorem in probability, Jenson’s Inequality:</p>
+
+
+        </div>
+             
+	
+    	<span class="label label-default"><a href="/tags#EM-ref" title="View posts tagged with &quot;EM&quot;">EM</a></span>
+    
+
+
+     </article>
+     <hr>
+  
+      <article>
       <div class="heading"><a href="/post/Kalman_bayesian/">Bayesian Kalman Filter</a></div>
       <p class="meta"><a class="permalink" href="/post/Kalman_bayesian/">&#9679;</a> 13 Apr 2016</p>
       <div>
-        <p>A large contribution to Bayesian state space models was from Pole, West and Harrison. Both Petris and Durbin and Koopman reference this book as an authority for a Bayesian analysis of Gaussian state space models. Given the sequential/recursive nature of the Kalman filter, it fits nicely into a Bayesian approach. Thinking of the previous state distribution as a prior state distribution seems like an obvious choice. The subjective prior is less controversial here.</p>
+        <!--<p>A large contribution to Bayesian state space models was from Pole, West and Harrison. Both Petris and Durbin and Koopman reference this book as an authority for a Bayesian analysis of Gaussian state space models. Given the sequential/recursive nature of the Kalman filter, it fits nicely into a Bayesian approach. Thinking of the previous state distribution as a prior state distribution seems like an obvious choice. The subjective prior is less controversial here.</p>
 
 <p>In machine learning, the Kalman filter is often introduced as a graphical model. It is analogous to the Hidden Markov Model (HMM). Where an HMM has discrete states, the Kalman filter has continuous. Both assume discrete time steps. A directed graphical model shows the relationship between the hidden and observed states.</p>
 
@@ -149,58 +194,17 @@ K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
 <p>This factor, is called the Kalman gain. There will be more weight when we are more uncertain about the prediction. The Kalman gain is what makes the Kalman filter adaptive. It determines how much we “trust” the observations. Therefore, it determines how much to correct them. The smaller is with respect to , the bigger the correction.</p>
 
 <p>I highly recommend Petris if you are interested in learning more about Kalman Filtering (and you are familiar with R).</p>
-
-        </div>
-             
-	
-
-
-     </article>
-     <hr>
-  
-      <article>
-      <div class="heading"><a href="/post/MonteCarlo/">Monte Carlo Methods</a></div>
-      <p class="meta"><a class="permalink" href="/post/MonteCarlo/">&#9679;</a> 22 Jan 2016</p>
-      <div>
-        <p>Recently, I became interested in markov chain monte carlo (MCMC) methods. I have a Statistics degree and 
-a Computer Science degree, however, neither degree offered courses on MCMC. The more I learn about them, 
-the more I understand how they blur the lines between Stats and CS.</p>
-
-<p>What are they? Monte Carlo methods use random sampling to make statistical estimates. That’s pretty vague, but stick 
-with me. It’s all about making random samples, but you have to be smart about it. Where are you sampling from? 
-What samples should be included in your sample statistics? How do you generate efficient samples? If you would 
-like to explore an area of a particularly difficult density function, you don’t want to make all of your samples
-in one corner of the density.</p>
-
-<p>I think Wolfram Alpha is pretty cool. It’s an easy interface for some quick calculations. If weren’t sure
-what the intergal of a standard normal distribution from -1.96 to 1.96 was, we could put it in Wolfram Alpha:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>integrate e^(-x^2/2)/sqrt(2 pi) dx from -1.96 to 1.96
-</code></pre>
-</div>
-
-<p>Or in R, we could define a standard normal density function (or use dnorm for simplicity), and use 
-R’s <code class="highlighter-rouge">intergate</code> function:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>my_std_normal &lt;- function(x) {  
-  exp(-x^2/2)/sqrt(2*pi)
-}
-</code></pre>
-</div>
-
-<p>Standard normal</p>
-
-<p>One of the simplest examples, is to estimate pi. <script type="math/tex">\pi</script> is used in the formula for the area of a circle (<script type="math/tex">Area = \pi * radius^2</script>). Since we’re really just interested in pi, we can choose a simple circle to work with and find its area. By the formula, a circle with a radius of 1 will give an area of of just <script type="math/tex">\pi</script>.</p>
-
-<p>Now, if we place this circle in a square so that it inscribes the square (centered at 0,0), the square would have to be a 2 by 2 square (since the radius of our circle was 1). So the square would range from -1 to 1 in both the x and y axes.</p>
-
-<p>With this setup, we can start using monte carlo to estimate pi. To use monte carlo, we simply sample numbers. In this case, we can sample numbers between 0 and 1 (using a simple random number generator found in most programming languages). Suppose we do this a thousand times for the positive side and a thousand times for the negative side. If we keep track of all the points samples, we can record the number within the circle (<script type="math/tex">% <![CDATA[
-x^2 + y^2 < 1 %]]></script>). So, if we pretend we don’t know the formula for the area of a circle, we could say that it is</p>
+-->
+		<p>A large contribution to Bayesian state space models was from Pole, West and Harrison. Both Petris and Durbin and Koopman reference this book as an authority for a Bayesian analysis of Gaussian state space models. Given the sequential/recursive nature of the Kalman filter, it fits nicely into a Bayesian approach. Thinking of the previous state distribution as a prior state distribution seems like an obvious choice. The subjective prior is less controversial here.</p>
 
 
         </div>
              
 	
+    	<span class="label label-default"><a href="/tags#Kalman filter-ref" title="View posts tagged with &quot;Kalman filter&quot;">Kalman filter</a></span>
+    
+    	<span class="label label-default"><a href="/tags#Bayesian-ref" title="View posts tagged with &quot;Bayesian&quot;">Bayesian</a></span>
+    
 
 
      </article>

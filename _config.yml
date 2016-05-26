@@ -1,16 +1,16 @@
 # Jekyll Defaults
-title: Data, Beer, Stats
+title: Data, Beer, and Stats
 description: Some thoughts about some of the best things in life, ... data, beer and stats
 baseurl: "" # the subpath of your site, e.g. /blog
 
-url: "http://localhost:3000"
+url: "http://localhost:4000"
 github: http://github.com/rjsteckel
 
 #markdown: redcarpet
 markdown: kramdown
 highlighter: rouge
 permalink: /post/:title/
-paginate: 2
+paginate: 3
 gems: [jekyll-paginate]
 paginate_path: "/page:num"
 rss_path: feed.xml
