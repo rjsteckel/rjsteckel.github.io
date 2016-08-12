@@ -7,6 +7,56 @@
 		<atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Homebrew Introduction</title>
+				<description>&lt;p&gt;Brewing beer has been a hobby of mine for about two years now. It can be a lot of working, yet fun at the same time. I started brewing with a simple one gallon IPA kit. When the beer turned was finished and it tasted pretty good, I wanted to do another batch. The logical next step, seemed to be that I visit my local homebrew shop. They were extremely helpful. There are a lot of variables in brewing beer. The ingredients, measurements, temperatures and times all affect the final beer product. But, when you’re just starting out, I think it’s best to understand the process. To me, there are three main steps, mashing, boiling and fermenting.&lt;/p&gt;
+
+&lt;h2 id=&quot;mashing&quot;&gt;Mashing&lt;/h2&gt;
+&lt;div style=&quot;float:left;margin:10px;&quot;&gt;&lt;img src=&quot;http://localhost:4000/assets/images/intro_mashing.jpg&quot; width=&quot;200&quot; height=&quot;200&quot; /&gt;&lt;/div&gt;
+
+&lt;p&gt;Mashing is the process of turning malted barley (and other cereal grains) into a sugary liquid called “wort”. The malting a grain is a process that initiates the germination of a seed and then stops it at the optimal time. For making beer, that optimal time is when the germinating seed contains the most starches. That optimal time is also when the very first indication of sprouting occurs. The seeds are then dried. The drying process is important for a couple reasons. Before the malted barley is used in a mash, it is milled. Milling cracks the seeds open to allow easy access to the starches inside. This is more easily done when the seed has been dried. But, drying also can change the flavor. Dark malts are malts that have been dried longer change flavor. When dried excessively long, chocolate and coffee-like flavors are brought out of the malt. Mashing uses water at the correct temperature to soften the milled seed and activate the enzymes it contains to turn those starches into sugars.&lt;/p&gt;
+
+&lt;h2 id=&quot;boiling&quot;&gt;Boiling&lt;/h2&gt;
+&lt;div style=&quot;float:left;margin:10px;&quot;&gt;&lt;img src=&quot;http://localhost:4000/assets/images/intro_boil.jpg&quot; width=&quot;200&quot; height=&quot;250&quot; /&gt;&lt;/div&gt;
+&lt;p&gt;This sugary liquid, wort, is the basic building block of beer. But, brewers need to always be conscious of sanitation. The wort could contain unwanted wild yeast strains or bacteria. To remove these, the brewer boils the wort, usually for an hour or so. The boil is also the time when hops are added. Hops are also called the spice of the beer. The bitterness of the hops balances the sweetness of the malt. The addition of hops to the boil is somewhat debated among brewers. Lately, last minute hop additions have become more common. Also, there are two main types of hops, hops that for bittering and hops that for aroma. Bittering hops are typically added in the beginning of the boil. Aroma hops are typically added near the end.&lt;/p&gt;
+
+&lt;h2 id=&quot;fermentation&quot;&gt;Fermentation&lt;/h2&gt;
+&lt;div style=&quot;float:left;margin:10px;&quot;&gt;&lt;img src=&quot;http://localhost:4000/assets/images/intro_ferment.jpg&quot; width=&quot;200&quot; height=&quot;250&quot; /&gt;&lt;/div&gt;
+&lt;p&gt;Temperature and wort quality are crucial to the fermentation step.&lt;/p&gt;
+
+&lt;p&gt;Raising the temperature from an initial temperature help activate the yeast and allows them to cleanup left over by-products. (Dactyl rest)&lt;/p&gt;
+</description>
+				<pubDate>Wed, 29 Jun 2016 00:00:00 -0500</pubDate>
+				<link>http://localhost:4000/post/Homebrew_Intro/</link>
+				<guid isPermaLink="true">http://localhost:4000/post/Homebrew_Intro/</guid>
+			</item>
+		
+			<item>
+				<title>Uses of the Negative Binomial</title>
+				<description>&lt;p&gt;The negative binomial distribution has become an interest of mine recently. Initially, I learned about the distribution in probability courses. To us, its use was motivated by counting the number of failures before r successes occurred. The classic example being the number of coin flips before n heads occurred.&lt;/p&gt;
+
+&lt;p&gt;So, the probability of the k successes (given a probability of success p) is:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+P(Y=k) = { {k - 1}\choose{r - 1} } p^{r-1} q^{k-r}
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;This is a lot like the standard binomial distribution. However, it says in k-1 failures
+Actually, this distribution can be parameterized in multiple ways. John Cook has a nice &lt;a href=&quot;http://www.johndcook.com/blog/2009/09/22/negative-binomial-distribution&quot;&gt;article&lt;/a&gt; on the most common ways.
+…..&lt;/p&gt;
+
+&lt;p&gt;Actually, I didn’t think much about the distribution since school. It seemed like an odd distribution that didn’t apply to many real-world problems. I was wrong.&lt;/p&gt;
+
+&lt;p&gt;In my current job, I deal with lots of counts on categorical data. In school, you learn that the go-to distribution for counts-per-something (i.e. count per day or count per block) is the Poisson distribution. This distribution makes the assumption that the mean count is the same as the variance of the counts. This rarely happens in the real world. It depends on what you’re counting, but often times, you’re counts included more zeros than expected. This is called over-dispersion. It makes the variance of a Poisson greater than the mean. It’s over dispersed.&lt;/p&gt;
+
+&lt;p&gt;To remedy this, people use the negative binomial distribution. Another interpretation of the negative binomial is as a mixture of Poisson and Gamma distributions.&lt;/p&gt;
+
+</description>
+				<pubDate>Wed, 25 May 2016 00:00:00 -0500</pubDate>
+				<link>http://localhost:4000/post/NegativeBinomial/</link>
+				<guid isPermaLink="true">http://localhost:4000/post/NegativeBinomial/</guid>
+			</item>
+		
+			<item>
 				<title>Bayesian Kalman Filter</title>
 				<description>&lt;p&gt;A large contribution to Bayesian state space models was from Pole, West and Harrison. Both Petris and Durbin and Koopman reference this book as an authority for a Bayesian analysis of Gaussian state space models. Given the sequential/recursive nature of the Kalman filter, it fits nicely into a Bayesian approach. Thinking of the previous state distribution as a prior state distribution seems like an obvious choice. The subjective prior is less controversial here.&lt;/p&gt;
 

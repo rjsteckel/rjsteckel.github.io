@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" type="image/icon" href="/favicon.ico">
+
+<title>Uses of the Negative Binomial</title>
+
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/main.css">
+
+<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+</head>
+<body>
+
+
+<header>
+<div id="nav_container">
+<nav>
+
+  <ul>
+  <h1><a href="/">Data, Beer, and Stats</a></h1>
+    
+      
+      
+
+      <li class="">
+        <a class="" href="/about/">About</a>
+      </li>
+    
+      
+      
+
+      <li class="">
+        <a class="" href="/archives/">Archives</a>
+      </li>
+    
+      
+      
+
+      <li class="">
+        <a class="" href="/tags/">Tags</a>
+      </li>
+    
+  </ul>
+
+</nav>
+</div>
+</header>
+
+<section id="main">
+	<article>
+<div class="heading">Uses of the Negative Binomial</div>
+<p class="meta"><a class="permalink" href="">&#9679;</a> 25 May 2016</p>
+<p>The negative binomial distribution has become an interest of mine recently. Initially, I learned about the distribution in probability courses. To us, its use was motivated by counting the number of failures before r successes occurred. The classic example being the number of coin flips before n heads occurred.</p>
+
+<p>So, the probability of the k successes (given a probability of success p) is:</p>
+
+<script type="math/tex; mode=display">\begin{align}
+P(Y=k) = { {k - 1}\choose{r - 1} } p^{r-1} q^{k-r}
+\end{align}</script>
+
+<p>This is a lot like the standard binomial distribution. However, it says in k-1 failures
+Actually, this distribution can be parameterized in multiple ways. John Cook has a nice <a href="http://www.johndcook.com/blog/2009/09/22/negative-binomial-distribution">article</a> on the most common ways.
+…..</p>
+
+<p>Actually, I didn’t think much about the distribution since school. It seemed like an odd distribution that didn’t apply to many real-world problems. I was wrong.</p>
+
+<p>In my current job, I deal with lots of counts on categorical data. In school, you learn that the go-to distribution for counts-per-something (i.e. count per day or count per block) is the Poisson distribution. This distribution makes the assumption that the mean count is the same as the variance of the counts. This rarely happens in the real world. It depends on what you’re counting, but often times, you’re counts included more zeros than expected. This is called over-dispersion. It makes the variance of a Poisson greater than the mean. It’s over dispersed.</p>
+
+<p>To remedy this, people use the negative binomial distribution. Another interpretation of the negative binomial is as a mixture of Poisson and Gamma distributions.</p>
+
+
+
+
+	
+    	<span class="label label-default"><a href="/tags#Probability-ref" title="View posts tagged with &quot;Probability&quot;">Probability</a></span>
+    
+    	<span class="label label-default"><a href="/tags#Counts-ref" title="View posts tagged with &quot;Counts&quot;">Counts</a></span>
+    
+
+</article>
+</section>
+
+</body>
+</html>
