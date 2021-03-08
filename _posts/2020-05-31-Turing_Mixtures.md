@@ -1,5 +1,6 @@
 Probabilistic programming seems to get more and more interest each year, but has yet to really take off. There's been Church, Anglican, Stan, Edward, Tensorflow probability, Gen and Turing. To me, Turing seems the most intuitive and natural feeling. It feels like I can easily take a generative model, found in a paper, and write it in Turing's model sytax.
 
+```
 using Turing
 using Distributions
 using StatsPlots
@@ -39,3 +40,4 @@ end
 
 s = Gibbs(PG(100, :k), HMC(.1, 10, :μ1, :μ2, :μ3, :ps))
 chn = sample(mm(y), s, 100)
+```
