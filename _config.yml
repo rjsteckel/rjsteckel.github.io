@@ -22,3 +22,5 @@ navigation:
   url: /archives/
 - text: Tags
   url: /tags/
+
+theme: jekyll-theme-cayman
