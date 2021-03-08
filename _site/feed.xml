@@ -2,9 +2,89 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title></title>
-		<description>Some thoughts about some of the best things in life, ... data, beer and stats</description>		
-		<link>http://localhost:4000</link>
-		<atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+		<description>Beer &amp; data</description>		
+		<link></link>
+		<atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Turing_mixtures</title>
+				<description>&lt;p&gt;Probabilistic programming seems to get more and more interest each year, but has yet to really take off. There’s been Church, Anglican, Stan, Edward, Tensorflow probability, Gen and Turing. To me, Turing seems the most intuitive and natural feeling. It feels like I can easily take a generative model, found in a paper, and write it in Turing’s model sytax.&lt;/p&gt;
+
+&lt;p&gt;using Turing
+using Distributions
+using StatsPlots&lt;/p&gt;
+
+&lt;p&gt;CD = Categorical([.3, .5, .2])
+PD = [Normal(-1), Normal(3), Normal(8)]
+N = 100
+y = Vector{Float32}()
+for i in 1:N
+    c = rand(CD)
+    v = rand(PD[c])
+    push!(y, v)
+end&lt;/p&gt;
+
+&lt;p&gt;histogram(y, bins=50)&lt;/p&gt;
+
+&lt;p&gt;@model mm(y) = begin
+    N = length(y)&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;μ1 ~ Normal()
+μ2 ~ Normal()
+μ3 ~ Normal()
+
+# μ ~ [μ1, μ2, μ3]  #***
+μ = [μ1, μ2, μ3]
+ps ~ Dirichlet(ones(3))
+
+k = Vector{Int}(undef, N)
+for i in 1:N
+    k[i] ~ Categorical(ps)
+    y[i] ~ Normal(μ[k[i]])
+end    return k end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;s = Gibbs(PG(100, :k), HMC(.1, 10, :μ1, :μ2, :μ3, :ps))
+chn = sample(mm(y), s, 100)&lt;/p&gt;
+</description>
+				<pubDate>Sun, 31 May 2020 00:00:00 -0500</pubDate>
+				<link>/2020/05/31/Turing_Mixtures.html</link>
+				<guid isPermaLink="true">/2020/05/31/Turing_Mixtures.html</guid>
+			</item>
+		
+			<item>
+				<title>Confidence Interval for proportions</title>
+				<description>&lt;p&gt;Proportions occur in many places.&lt;/p&gt;
+
+&lt;p&gt;A common inference method for a proportion, from a frequentist viewpoint, is estimating confidence intervals. For a frequentist, the parameters are fixed and the data varies. The dataset you’re anlayizing now is just one possible dataset of many that explain the phnonomen that you’re interested in. Governing this phenomeon is some parameter that you like to infer. You may never know the true value, but you can learn things about it.&lt;/p&gt;
+
+&lt;p&gt;For a proportion, you have a count ($x$) of the number of times the thing you’re interested in occured out of the possible times it could have happened ($n$). This is what the binomial distribution is for. One estimate for the proportion is simply, $\frac{x}{n}$.&lt;/p&gt;
+
+&lt;p&gt;This is one of the most basic “estimators” of a statistic. It is estimating a true statistic, that we’ll call $p$. $p$ is the true parameter that we can only get glimpses of through sampled datasets.&lt;/p&gt;
+
+&lt;p&gt;However, we can get an estimate of the difference between our estimator and the tru value. If we say that we want the difference of our estimator and the true value, $p$, to be less than $\alpha$, then there’s randomness in that inequality. But, we can cap that randomness with a probability. For example, $0.95$.&lt;/p&gt;
+
+\[\begin{align}
+P \{ \lvert \frac{x}{n} - p \rvert &amp;lt; α \} = 0.95
+\end{align}\]
+
+&lt;p&gt;This is the probability of:&lt;/p&gt;
+
+\[\frac{x}{n} - \alpha &amp;lt; p &amp;lt; \frac{x}{n} + \alpha\]
+
+&lt;p&gt;As often is the case in a frequentist setting, we rely on the central limit theorem for help. If we assume, the ratio $\frac{x}{n}$ is an estimator for the probability parameter in the binomial distribution, we can use some helpful facts. The binomial distribution tends toward a normal distribution (given enough observations, and a reasonable p). So, our goal here is use this information and construct standard normals for each end of our interval.&lt;/p&gt;
+
+&lt;p&gt;Multiple both sides of the inequality by n
+\(P \{ \lvert \frac{x}{n} - p \rvert &amp;lt; α \} = P \{ \lvert x - np \rvert &amp;lt; nα \}\)&lt;/p&gt;
+
+&lt;p&gt;Divide through by the standard deviation of a binomial variable ($\sqrt{np(1-p)}$). This gets us closer to the standard normal form $\frac{x - \mu}{\sigma}$&lt;/p&gt;
+
+\[P \{ \lvert x - np \rvert &amp;lt; nα \} = P \{ \lvert \frac{x - np}{\sqrt{np(1-p)}} \rvert &amp;lt; \frac{nα}{\sqrt{np(1-p)}} \}\]
+</description>
+				<pubDate>Fri, 10 Apr 2020 00:00:00 -0500</pubDate>
+				<link>/2020/04/10/Confidence_Intervals.html</link>
+				<guid isPermaLink="true">/2020/04/10/Confidence_Intervals.html</guid>
+			</item>
 		
 			<item>
 				<title>Homebrew Introduction</title>
@@ -24,8 +104,8 @@
 &lt;p&gt;Fermentation is the final step in brewing. It is the step where the brewer adds yeast to the wort. Temperature and wort quality are crucial to the fermentation step. The yeast cells ingest the sugars in the wort and produce two by-products, alcohol and co2. This process usually takes a few days to a week. Raising the temperature from an initial temperature help activate the yeast and allows them to cleanup left over by-products (called a Dactyl rest). For most beers, when this step is finished, the beer is ready to be carbonated and served.&lt;/p&gt;
 </description>
 				<pubDate>Thu, 11 Aug 2016 00:00:00 -0500</pubDate>
-				<link>http://localhost:4000/post/Homebrew_Intro/</link>
-				<guid isPermaLink="true">http://localhost:4000/post/Homebrew_Intro/</guid>
+				<link>/2016/08/11/Homebrew_Intro.html</link>
+				<guid isPermaLink="true">/2016/08/11/Homebrew_Intro.html</guid>
 			</item>
 		
 			<item>
@@ -34,9 +114,9 @@
 
 &lt;p&gt;So, the probability of the k successes (given a probability of success p) is:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+\[\begin{align}
 P(Y=k) = { {k - 1}\choose{r - 1} } p^{r-1} q^{k-r}
-\end{align}&lt;/script&gt;
+\end{align}\]
 
 &lt;p&gt;This is a lot like the standard binomial distribution. However, it says in k-1 failures
 Actually, this distribution can be parameterized in multiple ways. John Cook has a nice &lt;a href=&quot;http://www.johndcook.com/blog/2009/09/22/negative-binomial-distribution&quot;&gt;article&lt;/a&gt; on the most common ways.
@@ -50,8 +130,8 @@ Actually, this distribution can be parameterized in multiple ways. John Cook has
 
 </description>
 				<pubDate>Wed, 25 May 2016 00:00:00 -0500</pubDate>
-				<link>http://localhost:4000/post/NegativeBinomial/</link>
-				<guid isPermaLink="true">http://localhost:4000/post/NegativeBinomial/</guid>
+				<link>/2016/05/25/NegativeBinomial.html</link>
+				<guid isPermaLink="true">/2016/05/25/NegativeBinomial.html</guid>
 			</item>
 		
 			<item>
@@ -64,30 +144,30 @@ Actually, this distribution can be parameterized in multiple ways. John Cook has
 
 &lt;p&gt;The standard general state space model used in Kalman filters is typically defined as,&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+\[\begin{align}
 y_{t} = F_t\theta_{t} + v_{t}, \mbox{ } v_{t} \sim N(0,v_{t}) \notag \\
 \theta_{t} = G_t\theta_{t-1} + w_{t}, \mbox{ } w_{t} \sim N(0,W_{t})
-\end{align}&lt;/script&gt;
+\end{align}\]
 
 &lt;p&gt;Using the Kalman filter involves a cycle of steps to predict and correct. The pattern of predicting and then correcting is essentially what makes up the Kalman filter. As shown in Petris, without assumptions about the distribution of the state estimate, filtering follows a number of steps. First, we want to compute the one-step predictive density for the state before an observation at time step t.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation*}
+\[\begin{equation*}
 f\left( \theta_t | y_{1:t-1} \right) = \int f\left(\theta_t | \theta_{t-1} \right)
 f\left( \theta_{t-1} | y_{1:t-1} \right) d\theta_{t-1}
-\end{equation*}&lt;/script&gt;
+\end{equation*}\]
 
 &lt;p&gt;Then we compute the one-step predictive density for the observation also before an observation at time step t.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation*}
+\[\begin{equation*}
 f\left( y_t | y_{1:t-1} \right) = \int f\left( y_t | \theta_t \right) f\left( \theta_t | y_{1:t-1} \right) d\theta_{t}
-\end{equation*}&lt;/script&gt;
+\end{equation*}\]
 
 &lt;p&gt;Finally, after observing the value at time t, we compute the filtering density which represents our beliefs about the value of at time t.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation*}
+\[\begin{equation*}
 f\left( \theta_t | y_{1:t} \right) = \frac{ f\left( y_t | \theta_t \right) f \left( \theta_t | y_{1:t-1} \right) }
 { f \left( y_t | y_{1:t-1} \right) }
-\end{equation*}&lt;/script&gt;
+\end{equation*}\]
 
 &lt;p&gt;This value is the starting point in the next time step.&lt;/p&gt;
 
@@ -95,63 +175,58 @@ f\left( \theta_t | y_{1:t} \right) = \frac{ f\left( y_t | \theta_t \right) f \le
 
 &lt;p&gt;First, we compute , which is Gaussian, using the state transition equation from the state space model. This is the the one-step predictive distribution of the state given the observations up to t-1.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-f\left(\theta_{t}|y_{1:t-1}\right) \mbox{ } &amp;\sim N(a_{t},R_{t}) \\ \\
-a_{t} &amp;= E[G_t\theta_t + w_t| y_{1:t-1}] = G_tm_{t-1} \\
-R_{t} &amp;= Var[G_t\theta_t + w_t | y_{1:t-1}] = G_tC_{t-1}G_t&#39; + W_t
-\end{align*} %]]&gt;&lt;/script&gt;
+\[\begin{align*}
+f\left(\theta_{t}|y_{1:t-1}\right) \mbox{ } &amp;amp;\sim N(a_{t},R_{t}) \\ \\
+a_{t} &amp;amp;= E[G_t\theta_t + w_t| y_{1:t-1}] = G_tm_{t-1} \\
+R_{t} &amp;amp;= Var[G_t\theta_t + w_t | y_{1:t-1}] = G_tC_{t-1}G_t&apos; + W_t
+\end{align*}\]
 
 &lt;p&gt;Then we predict the next observation, , which is also Gaussian. This prediction step is where we incorporate the dynamics of the model specified in the observation portion of the state space equation.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-f\left(Y_{t}|y_{1:t-1}\right) \mbox{ } &amp;\sim N(f_{t},Q_{t}) \\ \\
-f_{t} &amp;= E[F_t\theta_t + v_t| y_{1:t-1}] = F_ta_{t} \\
-Q_{t} &amp;= Var[F_t\theta_t + v_t| y_{1:t-1}] = F_tR_{t}F_t&#39; + V_t
-\end{align*} %]]&gt;&lt;/script&gt;
+\[\begin{align*}
+f\left(Y_{t}|y_{1:t-1}\right) \mbox{ } &amp;amp;\sim N(f_{t},Q_{t}) \\ \\
+f_{t} &amp;amp;= E[F_t\theta_t + v_t| y_{1:t-1}] = F_ta_{t} \\
+Q_{t} &amp;amp;= Var[F_t\theta_t + v_t| y_{1:t-1}] = F_tR_{t}F_t&apos; + V_t
+\end{align*}\]
 
 &lt;p&gt;Both of the previous steps are before the observation at time t is used. When observation $y_t$ is known, we can compute using the results from the previous steps, and the new observation. The filtering distribution for the state estimate after observing .&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-f\left( \theta_t | y_t \right) &amp;\propto f\left(Y_t|\theta_t, y_{t-1} \right) f\left( \theta_t | y_{t-1}\right) \\
-&amp;\propto N(m_t,C_t) \\
-m_t &amp;= E[\theta_t | y_{1:t}] \\
-C_t &amp;= Var[\theta_t | y_{1:t}]
-\end{align*} %]]&gt;&lt;/script&gt;
+\[\begin{align*}
+f\left( \theta_t | y_t \right) &amp;amp;\propto f\left(Y_t|\theta_t, y_{t-1} \right) f\left( \theta_t | y_{t-1}\right) \\
+&amp;amp;\propto N(m_t,C_t) \\
+m_t &amp;amp;= E[\theta_t | y_{1:t}] \\
+C_t &amp;amp;= Var[\theta_t | y_{1:t}]
+\end{align*}\]
 
 &lt;p&gt;So the normal distribution that fully describes our estimate of at time t (for the univariate case) is&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-f(\theta_t|y_t) &amp;= N(m_t,C_t) \\
-&amp;= N(\frac{vm_{t-1} + C_{t-1}y_t}{v_t
+\[\begin{align*}
+f(\theta_t|y_t) &amp;amp;= N(m_t,C_t) \\
+&amp;amp;= N(\frac{vm_{t-1} + C_{t-1}y_t}{v_t
 + C_{t-1}} , \frac{ v_tC_{t-1} }{v_t + C_{t-1}} )
-\end{align*} %]]&gt;&lt;/script&gt;
+\end{align*}\]
 
 &lt;p&gt;If we inspect the mean of the new distribution, we see that it is a weighted average of the previous mean and the new observation (Petris) (using Bayesian updating).&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-m_t &amp;= \frac{v_tm_{t-1} + C_{t-1}y_t}{v_t + C_{t-1}} \\
-&amp;= \frac{ v_t }{ v_t + C_{t-1} }m_{t-1} + \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t \\
-&amp;= \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t + \left( 1 - \frac{ C_{t-1} }{ v_t + C_{t-1} }m_{t-1} \right) \\
-&amp;= m_{t-1} + \frac{ C_{t-1} }{ C_{t-1} + v_t } \left(y_{t} - m_{t-1} \right) \\
-\end{align*} %]]&gt;&lt;/script&gt;
+\[\begin{align*}
+m_t &amp;amp;= \frac{v_tm_{t-1} + C_{t-1}y_t}{v_t + C_{t-1}} \\
+&amp;amp;= \frac{ v_t }{ v_t + C_{t-1} }m_{t-1} + \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t \\
+&amp;amp;= \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t + \left( 1 - \frac{ C_{t-1} }{ v_t + C_{t-1} }m_{t-1} \right) \\
+&amp;amp;= m_{t-1} + \frac{ C_{t-1} }{ C_{t-1} + v_t } \left(y_{t} - m_{t-1} \right) \\
+\end{align*}\]
 
 &lt;p&gt;So the prediction error, is weighted by a factor
-&lt;script type=&quot;math/tex&quot;&gt;\begin{equation*}
+\(\begin{equation*}
 K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
-\end{equation*}&lt;/script&gt;&lt;/p&gt;
+\end{equation*}\)&lt;/p&gt;
 
 &lt;p&gt;This factor, is called the Kalman gain. There will be more weight when we are more uncertain about the prediction. The Kalman gain is what makes the Kalman filter adaptive. It determines how much we “trust” the observations. Therefore, it determines how much to correct them. The smaller is with respect to , the bigger the correction.&lt;/p&gt;
 
 &lt;p&gt;I highly recommend Petris if you are interested in learning more about Kalman Filtering (and you are familiar with R).&lt;/p&gt;
 </description>
 				<pubDate>Wed, 13 Apr 2016 00:00:00 -0500</pubDate>
-				<link>http://localhost:4000/post/Kalman_bayesian/</link>
-				<guid isPermaLink="true">http://localhost:4000/post/Kalman_bayesian/</guid>
+				<link>/2016/04/13/Kalman_bayesian.html</link>
+				<guid isPermaLink="true">/2016/04/13/Kalman_bayesian.html</guid>
 			</item>
 		
 			<item>
@@ -212,8 +287,8 @@ K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
 &lt;p&gt;Is this useful for anything? Not really. There are much better ways to calculate . But, I think it is a good demonstration of the Monte Carlo concept. The same principal is used to calculate probability densities.&lt;/p&gt;
 </description>
 				<pubDate>Tue, 12 Jan 2016 00:00:00 -0600</pubDate>
-				<link>http://localhost:4000/post/Monte_carlo/</link>
-				<guid isPermaLink="true">http://localhost:4000/post/Monte_carlo/</guid>
+				<link>/2016/01/12/Monte_carlo.html</link>
+				<guid isPermaLink="true">/2016/01/12/Monte_carlo.html</guid>
 			</item>
 		
 			<item>
@@ -228,44 +303,44 @@ K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
 
 &lt;p&gt;Using R, I simply type in the data. I added a column of 1’s to handle the intercept parameter&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cbind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;700&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;250&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;450&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;650&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;150&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cbind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;rep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;700&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;250&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;450&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;650&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;150&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Next, we define a model function that implements the linear model.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-   &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%*%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%*%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Now, we just need to define the objective function (J).&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;objective&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-   &lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;^&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;objective&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;^&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Here’s where we differ from the ml class. Instead of gradient descent, we can use R’s built general purpose optimization function. A number of optimization algorithms are available in optim, but with this simple example, they should all give the same answer.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;op&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;optim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;objective&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;BFGS&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;op&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;optim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objective&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;BFGS&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;That’s it. The optimized weights are in the R object called ‘op’. The y-intercept is 650.27 and the slope is -73.07. To verify the numbers, we can use R’s lm function.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;The lm function returns the exact same values, 650.27 and -73.07.&lt;/p&gt;
 
 &lt;p&gt;This same method could be used for logistic regression. We just change the model to the logit function (using appropriate data for logistic regression) and optimize again.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;dtv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%*%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtv&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%*%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;It’s a toy example. A simple model like this isn’t much use in the real world, but it’s a start. More appropriate models can be used that might more realistically model data in higher dimensions. And possibly more efficient optimization algorithms could be used.&lt;/p&gt;
 </description>
 				<pubDate>Sat, 02 Jan 2016 00:00:00 -0600</pubDate>
-				<link>http://localhost:4000/post/Regression_ml/</link>
-				<guid isPermaLink="true">http://localhost:4000/post/Regression_ml/</guid>
+				<link>/2016/01/02/Regression_ml.html</link>
+				<guid isPermaLink="true">/2016/01/02/Regression_ml.html</guid>
 			</item>
 		
 			<item>
@@ -280,9 +355,9 @@ K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
 
 &lt;p&gt;For example, we can use the dlmModPoly function to build a simple state space model with two parameters. One is V, the observation variance and the other is W, the process variance. Both of these are typically estimated using the dlmMLE function which performs maximum likelihood to get the estimates. It only requires a function that provides the state space model. For example:&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-   &lt;span class=&quot;n&quot;&gt;dlmModPoly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dlmModPoly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;This model just sets the variance parameters with the vector passed in. With this simple model, we can estimate parameters (using dlmMLE) and filter the data (using dlmFilter). Next, we can plot the filter and check the assumptions of the Kalman filter using the residuals.&lt;/p&gt;
 
@@ -294,10 +369,10 @@ K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
 
 &lt;p&gt;Next, we can create a state space model that expects seasonality.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-   &lt;span class=&quot;n&quot;&gt;dlmModPoly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
-   &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dlmModSeas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model2&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dlmModPoly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dlmModSeas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Model 2 (no trend, with seasonal)
 Click to enlarge&lt;/p&gt;
@@ -306,14 +381,14 @@ Click to enlarge&lt;/p&gt;
 
 &lt;p&gt;Our third model accounts for both seasonality and trend.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-   &lt;span class=&quot;n&quot;&gt;seasons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;
-   &lt;span class=&quot;n&quot;&gt;polyMod&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dlmModPoly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
-                      &lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])))&lt;/span&gt;
-   &lt;span class=&quot;n&quot;&gt;seasMod&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dlmModSeas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seasons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
-                      &lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seasons&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;-2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
-   &lt;span class=&quot;n&quot;&gt;polyMod&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seasMod&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;model3&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seasons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;polyMod&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dlmModPoly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seasMod&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dlmModSeas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seasons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dV&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dW&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;par&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;rep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seasons&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;-2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;polyMod&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seasMod&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Model 3 (with trend, with seasonal)
 Click to enlarge&lt;/p&gt;
@@ -325,8 +400,8 @@ Click to enlarge&lt;/p&gt;
 &lt;p&gt;This experimentation is time consuming. But once the state space model is chosen and the parameters are found, you have a powerful model for estimating, smoothing and forecasting.&lt;/p&gt;
 </description>
 				<pubDate>Mon, 28 Dec 2015 00:00:00 -0600</pubDate>
-				<link>http://localhost:4000/post/Kalman_dlm/</link>
-				<guid isPermaLink="true">http://localhost:4000/post/Kalman_dlm/</guid>
+				<link>/2015/12/28/Kalman_dlm.html</link>
+				<guid isPermaLink="true">/2015/12/28/Kalman_dlm.html</guid>
 			</item>
 		
 			<item>
@@ -346,8 +421,8 @@ Click to enlarge&lt;/p&gt;
 &lt;p&gt;In the next post, I’ll look at the actual filtering equations.&lt;/p&gt;
 </description>
 				<pubDate>Tue, 22 Dec 2015 00:00:00 -0600</pubDate>
-				<link>http://localhost:4000/post/Kalman_statespace/</link>
-				<guid isPermaLink="true">http://localhost:4000/post/Kalman_statespace/</guid>
+				<link>/2015/12/22/Kalman_statespace.html</link>
+				<guid isPermaLink="true">/2015/12/22/Kalman_statespace.html</guid>
 			</item>
 		
 	</channel>

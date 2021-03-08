@@ -1,24 +1,17 @@
-# Jekyll Defaults
-title: Data, Beer, and Stats
-description: Some thoughts about some of the best things in life, ... data, beer and stats
+title: Hoppy Data
+description: Beer & data
 baseurl: "" # the subpath of your site, e.g. /blog
+lsi: false
+safe: true
 
-url: "http://localhost:4000"
-github: http://github.com/rjsteckel
-
-#markdown: redcarpet
-markdown: kramdown
+incremental: false
 highlighter: rouge
-permalink: /post/:title/
-paginate: 3
-gems: [jekyll-paginate]
-paginate_path: "/page:num"
-rss_path: feed.xml
-tags_path: tag.html
-navigation:
-- text: About
-  url: /about/
-- text: Archives
-  url: /archives/
-- text: Tags
-  url: /tags/
+
+gist:
+  noscript: false
+
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+
+

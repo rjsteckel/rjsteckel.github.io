@@ -1,9 +1,7 @@
 ---
 layout: default
-title: Data, Beer, and Stats
+title: Hoppy Data
 ---
-
-Some things I find interesting about data, beer or statistics. 
 
 <div style="float:left;margin:10px;"><img src="{{ site.url }}/assets/images/beers.jpeg" width="200" height="200" /></div>
 

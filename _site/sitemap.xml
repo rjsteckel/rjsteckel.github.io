@@ -2,7 +2,25 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
-      <loc>/post/Homebrew_Intro/</loc>
+      <loc>/2020/05/31/Turing_Mixtures.html</loc>
+      
+        <lastmod>2020-05-31T00:00:00-05:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>1.0</priority>
+    </url>
+  
+    <url>
+      <loc>/2020/04/10/Confidence_Intervals.html</loc>
+      
+        <lastmod>2020-04-10T00:00:00-05:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>1.0</priority>
+    </url>
+  
+    <url>
+      <loc>/2016/08/11/Homebrew_Intro.html</loc>
       
         <lastmod>2016-08-11T00:00:00-05:00</lastmod>
       
@@ -11,7 +29,7 @@
     </url>
   
     <url>
-      <loc>/post/NegativeBinomial/</loc>
+      <loc>/2016/05/25/NegativeBinomial.html</loc>
       
         <lastmod>2016-05-25T00:00:00-05:00</lastmod>
       
@@ -20,7 +38,7 @@
     </url>
   
     <url>
-      <loc>/post/Kalman_bayesian/</loc>
+      <loc>/2016/04/13/Kalman_bayesian.html</loc>
       
         <lastmod>2016-04-13T00:00:00-05:00</lastmod>
       
@@ -29,7 +47,7 @@
     </url>
   
     <url>
-      <loc>/post/Monte_carlo/</loc>
+      <loc>/2016/01/12/Monte_carlo.html</loc>
       
         <lastmod>2016-01-12T00:00:00-06:00</lastmod>
       
@@ -38,7 +56,7 @@
     </url>
   
     <url>
-      <loc>/post/Regression_ml/</loc>
+      <loc>/2016/01/02/Regression_ml.html</loc>
       
         <lastmod>2016-01-02T00:00:00-06:00</lastmod>
       
@@ -47,7 +65,7 @@
     </url>
   
     <url>
-      <loc>/post/Kalman_dlm/</loc>
+      <loc>/2015/12/28/Kalman_dlm.html</loc>
       
         <lastmod>2015-12-28T00:00:00-06:00</lastmod>
       
@@ -56,7 +74,7 @@
     </url>
   
     <url>
-      <loc>/post/Kalman_statespace/</loc>
+      <loc>/2015/12/22/Kalman_statespace.html</loc>
       
         <lastmod>2015-12-22T00:00:00-06:00</lastmod>
       
@@ -64,10 +82,6 @@
       <priority>1.0</priority>
     </url>
   
-  
-    
-  
-    
   
     
   

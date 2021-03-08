@@ -22,28 +22,7 @@
 <nav>
 
   <ul>
-  <h1><a href="/">Data, Beer, and Stats</a></h1>
-    
-      
-      
-
-      <li class="">
-        <a class="" href="/about/">About</a>
-      </li>
-    
-      
-      
-
-      <li class="">
-        <a class="" href="/archives/">Archives</a>
-      </li>
-    
-      
-      
-
-      <li class="">
-        <a class="" href="/tags/">Tags</a>
-      </li>
+  <h1><a href="/">Hoppy Data</a></h1>
     
   </ul>
 
@@ -63,30 +42,30 @@
 
 <p>The standard general state space model used in Kalman filters is typically defined as,</p>
 
-<script type="math/tex; mode=display">\begin{align}
+\[\begin{align}
 y_{t} = F_t\theta_{t} + v_{t}, \mbox{ } v_{t} \sim N(0,v_{t}) \notag \\
 \theta_{t} = G_t\theta_{t-1} + w_{t}, \mbox{ } w_{t} \sim N(0,W_{t})
-\end{align}</script>
+\end{align}\]
 
 <p>Using the Kalman filter involves a cycle of steps to predict and correct. The pattern of predicting and then correcting is essentially what makes up the Kalman filter. As shown in Petris, without assumptions about the distribution of the state estimate, filtering follows a number of steps. First, we want to compute the one-step predictive density for the state before an observation at time step t.</p>
 
-<script type="math/tex; mode=display">\begin{equation*}
+\[\begin{equation*}
 f\left( \theta_t | y_{1:t-1} \right) = \int f\left(\theta_t | \theta_{t-1} \right)
 f\left( \theta_{t-1} | y_{1:t-1} \right) d\theta_{t-1}
-\end{equation*}</script>
+\end{equation*}\]
 
 <p>Then we compute the one-step predictive density for the observation also before an observation at time step t.</p>
 
-<script type="math/tex; mode=display">\begin{equation*}
+\[\begin{equation*}
 f\left( y_t | y_{1:t-1} \right) = \int f\left( y_t | \theta_t \right) f\left( \theta_t | y_{1:t-1} \right) d\theta_{t}
-\end{equation*}</script>
+\end{equation*}\]
 
 <p>Finally, after observing the value at time t, we compute the filtering density which represents our beliefs about the value of at time t.</p>
 
-<script type="math/tex; mode=display">\begin{equation*}
+\[\begin{equation*}
 f\left( \theta_t | y_{1:t} \right) = \frac{ f\left( y_t | \theta_t \right) f \left( \theta_t | y_{1:t-1} \right) }
 { f \left( y_t | y_{1:t-1} \right) }
-\end{equation*}</script>
+\end{equation*}\]
 
 <p>This value is the starting point in the next time step.</p>
 
@@ -94,55 +73,50 @@ f\left( \theta_t | y_{1:t} \right) = \frac{ f\left( y_t | \theta_t \right) f \le
 
 <p>First, we compute , which is Gaussian, using the state transition equation from the state space model. This is the the one-step predictive distribution of the state given the observations up to t-1.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-f\left(\theta_{t}|y_{1:t-1}\right) \mbox{ } &\sim N(a_{t},R_{t}) \\ \\
-a_{t} &= E[G_t\theta_t + w_t| y_{1:t-1}] = G_tm_{t-1} \\
-R_{t} &= Var[G_t\theta_t + w_t | y_{1:t-1}] = G_tC_{t-1}G_t' + W_t
-\end{align*} %]]></script>
+\[\begin{align*}
+f\left(\theta_{t}|y_{1:t-1}\right) \mbox{ } &amp;\sim N(a_{t},R_{t}) \\ \\
+a_{t} &amp;= E[G_t\theta_t + w_t| y_{1:t-1}] = G_tm_{t-1} \\
+R_{t} &amp;= Var[G_t\theta_t + w_t | y_{1:t-1}] = G_tC_{t-1}G_t' + W_t
+\end{align*}\]
 
 <p>Then we predict the next observation, , which is also Gaussian. This prediction step is where we incorporate the dynamics of the model specified in the observation portion of the state space equation.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-f\left(Y_{t}|y_{1:t-1}\right) \mbox{ } &\sim N(f_{t},Q_{t}) \\ \\
-f_{t} &= E[F_t\theta_t + v_t| y_{1:t-1}] = F_ta_{t} \\
-Q_{t} &= Var[F_t\theta_t + v_t| y_{1:t-1}] = F_tR_{t}F_t' + V_t
-\end{align*} %]]></script>
+\[\begin{align*}
+f\left(Y_{t}|y_{1:t-1}\right) \mbox{ } &amp;\sim N(f_{t},Q_{t}) \\ \\
+f_{t} &amp;= E[F_t\theta_t + v_t| y_{1:t-1}] = F_ta_{t} \\
+Q_{t} &amp;= Var[F_t\theta_t + v_t| y_{1:t-1}] = F_tR_{t}F_t' + V_t
+\end{align*}\]
 
 <p>Both of the previous steps are before the observation at time t is used. When observation $y_t$ is known, we can compute using the results from the previous steps, and the new observation. The filtering distribution for the state estimate after observing .</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-f\left( \theta_t | y_t \right) &\propto f\left(Y_t|\theta_t, y_{t-1} \right) f\left( \theta_t | y_{t-1}\right) \\
-&\propto N(m_t,C_t) \\
-m_t &= E[\theta_t | y_{1:t}] \\
-C_t &= Var[\theta_t | y_{1:t}]
-\end{align*} %]]></script>
+\[\begin{align*}
+f\left( \theta_t | y_t \right) &amp;\propto f\left(Y_t|\theta_t, y_{t-1} \right) f\left( \theta_t | y_{t-1}\right) \\
+&amp;\propto N(m_t,C_t) \\
+m_t &amp;= E[\theta_t | y_{1:t}] \\
+C_t &amp;= Var[\theta_t | y_{1:t}]
+\end{align*}\]
 
 <p>So the normal distribution that fully describes our estimate of at time t (for the univariate case) is</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-f(\theta_t|y_t) &= N(m_t,C_t) \\
-&= N(\frac{vm_{t-1} + C_{t-1}y_t}{v_t
+\[\begin{align*}
+f(\theta_t|y_t) &amp;= N(m_t,C_t) \\
+&amp;= N(\frac{vm_{t-1} + C_{t-1}y_t}{v_t
 + C_{t-1}} , \frac{ v_tC_{t-1} }{v_t + C_{t-1}} )
-\end{align*} %]]></script>
+\end{align*}\]
 
 <p>If we inspect the mean of the new distribution, we see that it is a weighted average of the previous mean and the new observation (Petris) (using Bayesian updating).</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-m_t &= \frac{v_tm_{t-1} + C_{t-1}y_t}{v_t + C_{t-1}} \\
-&= \frac{ v_t }{ v_t + C_{t-1} }m_{t-1} + \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t \\
-&= \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t + \left( 1 - \frac{ C_{t-1} }{ v_t + C_{t-1} }m_{t-1} \right) \\
-&= m_{t-1} + \frac{ C_{t-1} }{ C_{t-1} + v_t } \left(y_{t} - m_{t-1} \right) \\
-\end{align*} %]]></script>
+\[\begin{align*}
+m_t &amp;= \frac{v_tm_{t-1} + C_{t-1}y_t}{v_t + C_{t-1}} \\
+&amp;= \frac{ v_t }{ v_t + C_{t-1} }m_{t-1} + \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t \\
+&amp;= \frac{ C_{t-1} }{ v_t + C_{t-1} }y_t + \left( 1 - \frac{ C_{t-1} }{ v_t + C_{t-1} }m_{t-1} \right) \\
+&amp;= m_{t-1} + \frac{ C_{t-1} }{ C_{t-1} + v_t } \left(y_{t} - m_{t-1} \right) \\
+\end{align*}\]
 
 <p>So the prediction error, is weighted by a factor
-<script type="math/tex">\begin{equation*}
+\(\begin{equation*}
 K_{t} = \frac{ C_{t} }{ v_t + C_{t} }
-\end{equation*}</script></p>
+\end{equation*}\)</p>
 
 <p>This factor, is called the Kalman gain. There will be more weight when we are more uncertain about the prediction. The Kalman gain is what makes the Kalman filter adaptive. It determines how much we “trust” the observations. Therefore, it determines how much to correct them. The smaller is with respect to , the bigger the correction.</p>
 
