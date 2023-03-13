@@ -4,3 +4,8 @@
 
 layout: home
 ---
+
+### Posts
+
+$$ \frac{1}{N} \sum_{i=1}^{N}{x_i} $$
+
