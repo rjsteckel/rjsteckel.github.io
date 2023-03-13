@@ -35,11 +35,10 @@ theme: minima
 plugins:
   - jekyll-feed
 
-markdown: kramdown
-
-kramdown:
-  math_engine: mathjax
-  syntax_highlighter: rouge
+#markdown: kramdown
+#kramdown:
+#  math_engine: mathjax
+#  syntax_highlighter: rouge
   
 
 # Exclude from processing.
