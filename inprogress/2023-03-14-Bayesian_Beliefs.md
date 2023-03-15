@@ -16,10 +16,22 @@ Some possible hypotheses are:
 H1: The data came from a poisson distribution with a $\lambda=1.2$
 H2: The data came from a negative binomial distribution with $n=2; p=0.2$
 
-If we don't know anything about the data, both hypotheses seem valid. The distributions both represent positive integer data. 
+If we don't know anything about the data, both hypotheses seem valid. The distributions both represent positive integer data. The "belief" viewpoint of bayesian probability allows to say that one hypothesis seems more likely than others. 
 
-$$ P(H=h1|D) = \frac{P(D|H=h1)P(H=h1)}{P(D)} $$
+First off, bayes rule lets "reverse" the conditional probability. 
 
+$$ P(H=h1|D) \propto P(D|H=h1)P(H=h1) $$ 
 
+But this is just due to the definition of conditional probability.
+
+$$ P(A|B) = \frac{P(A,B)}{P(B)} $$
+But, also by the conditional probability definition, we could also say
+$$ P(B|A) = \frac{P(A,B)}{P(A)} $$
+With some rearranging
+$$
+\begin{align}
+    P(A,B) = \frac{P(B|A)}{P(A)} = \frac{P(A|B)}{P(B)}    
+\end{align}
+$$
 
 
