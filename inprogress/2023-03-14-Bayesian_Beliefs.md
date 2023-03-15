@@ -16,15 +16,10 @@ Some possible hypotheses are:
 H1: The data came from a poisson distribution with a $\lambda=1.2$
 H2: The data came from a negative binomial distribution with $n=2; p=0.2$
 
-Both hypotheses seem valid. The 
+If we don't know anything about the data, both hypotheses seem valid. The distributions both represent positive integer data. 
 
 $$ P(H=h1|D) = \frac{P(D|H=h1)P(H=h1)}{P(D)} $$
 
 
 
 
-{% highlight julia %}
-test(x)
-    x^2
-end
-{% endhighlight %}

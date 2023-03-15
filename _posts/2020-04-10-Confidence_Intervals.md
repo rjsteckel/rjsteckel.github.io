@@ -46,3 +46,10 @@ Divide through by the standard deviation of a binomial variable ($\sqrt{np(1-p)}
 $$
 P \{ \lvert x - np \rvert < nα \} = P \{ \lvert \frac{x - np}{\sqrt{np(1-p)}} \rvert < \frac{nα}{\sqrt{np(1-p)}} \}
 $$
+
+
+{% highlight julia %}
+test(x)
+    x^2
+end
+{% endhighlight %}
