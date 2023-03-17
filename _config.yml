@@ -22,7 +22,8 @@ title: Probably Useful
 email: rsteckel@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   This site is a place for me to organize my thoughts about things I've found
-  useful over the years as a data scientist. 
+  useful over the years as a data scientist. My hope is that someone else finds
+  the things here useful too. 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
