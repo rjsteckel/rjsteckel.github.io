@@ -63,7 +63,7 @@ $$
 \end{aligned}
 $$
 
-We no longer use the $$\propto$$ sign. We're dividing by $$P(D)$$ to make sure each hypothesis is a probability and that $$P(H=h_1|D)$$ and $$P(H = h_2|D)$$ sum to 1. This is just the sum of the weighted likelihoods (weighted by a prior) for each hypothesis. 
+We no longer use the $\propto$ sign. We're dividing by $P(D)$ to make sure each hypothesis is a probability and that $P(H=h_1|D)$ and $P(H = h_2|D)$ sum to 1. This is just the sum of the weighted likelihoods (weighted by a prior) for each hypothesis. 
 
 $$
 P(D) = P(D|H=h_1)P(H=h_1) + P(D|H=h_2)P(H=h_2)
