@@ -48,3 +48,5 @@ P \{ \lvert x - np \rvert < nα \} = P \{ \lvert \frac{x - np}{\sqrt{np(1-p)}} \
 $$
 
 
+
+
