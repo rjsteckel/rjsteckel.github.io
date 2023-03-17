@@ -24,7 +24,7 @@ But, also by the conditional probability definition, we could also say
 
 $$ P(B|A) = \frac{P(A,B)}{P(A)} $$
 
-The joint probability $P(A,B)$ is common to both of these. With some rearranging
+The joint probability $$P(A,B)$$ is common to both of these. With some rearranging
 
 $$
 \begin{aligned} 
@@ -37,7 +37,7 @@ So, from a "belief" perspective,
 
 $$ P(H=h_1|D) \propto P(D|H=h_1)P(H=h_1) $$ 
 
-However, the right-hand side of statement is not just for a random variable conditioned on a particular observation. In this case, $D$ is the observed data. Typically, it is assumed that each element in $D$ is independent of the other data elements.
+However, the right-hand side of statement is not just for a random variable conditioned on a particular observation. In this case, $D$ is the observed data. Typically, it is assumed that each element in $$D$$ is independent of the other data elements.
 
 $$
 P(D) = P(d_1, d_2, ... d_n) = P(d_1)P(d_2)...P(d_n)
@@ -52,7 +52,7 @@ P(H=h1|D) &\propto P(d_1,d_2,...,d_3|H=h_1)P(H=h_1) \\
 \end{aligned}
 $$
 
-This is just a likelihood of the observed data multiplied by the probability of $h_1$. Often times, one hypothesis is more likely than others. This prior probability lets us model that if we want to. The prior could also be the same for each hypothesis and it cancels out.
+This is just a likelihood of the observed data multiplied by the probability of $$h_1$$. Often times, one hypothesis is more likely than others. This prior probability lets us model that if we want to. The prior could also be the same for each hypothesis and it cancels out.
 
 So back to our example data and hypotheses about it. Our two hypotheses are:
 
@@ -63,7 +63,7 @@ $$
 \end{aligned}
 $$
 
-We no longer use the $\propto$ sign. We're dividing by $P(D)$ to make sure each hypothesis is a probability and that $P(H=h_1|D)$ and $P(H = h_2|D)$ sum to 1. This is just the sum of the weighted likelihoods (weighted by a prior) for each hypothesis. 
+We no longer use the $$\propto$$ sign. We're dividing by $$P(D)$$ to make sure each hypothesis is a probability and that $$P(H=h_1|D)$$ and $$P(H = h_2|D)$$ sum to 1. This is just the sum of the weighted likelihoods (weighted by a prior) for each hypothesis. 
 
 $$
 P(D) = P(D|H=h_1)P(H=h_1) + P(D|H=h_2)P(H=h_2)
