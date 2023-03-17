@@ -13,12 +13,10 @@ Data = [3, 3, 2, 6, 0, 0, 1, 0]
 
 Some possible hypotheses are:
 
-H1: The data came from a poisson distribution with a $\lambda=1.2$
-H2: The data came from a negative binomial distribution with $n=5; p=0.85$
+H1: The data came from a poisson distribution with a $$\lambda=1.2$$
+H2: The data came from a negative binomial distribution with $$n=5; p=0.85$$
 
-If we don't know anything about the data, both hypotheses seem valid. The distributions both represent positive integer data. The "belief" viewpoint of bayesian probability allows to say that one hypothesis seems more likely than others. That there is a stronger belief for one hypothesis. 
-
-First off, bayes rule lets "reverse" the conditional probability. But this is just due to the definition of conditional probability. We can write $P(A|B)$ as
+If we don't know anything about the data, both hypotheses seem valid. The distributions both represent positive integer data. The "belief" viewpoint of bayesian probability allows to say that one hypothesis seems more likely than others. That there is a stronger belief for one hypothesis. First off, bayes rule lets "reverse" the conditional probability. But this is just due to the definition of conditional probability.
 
 $$ P(A|B) = \frac{P(A,B)}{P(B)} $$
 
