@@ -13,8 +13,8 @@ Data = [3, 3, 2, 6, 0, 0, 1, 0]
 
 Some possible hypotheses are:
 
-H1: The data came from a poisson distribution with a $$\lambda=1.2$$
-H2: The data came from a negative binomial distribution with $$n=5; p=0.85$$
+H1: The data came from a poisson distribution with a $\lambda=1.2$
+H2: The data came from a negative binomial distribution with $n=5; p=0.85$
 
 If we don't know anything about the data, both hypotheses seem valid. The distributions both represent positive integer data. The "belief" viewpoint of bayesian probability allows to say that one hypothesis seems more likely than others. That there is a stronger belief for one hypothesis. First off, bayes rule lets "reverse" the conditional probability. But this is just due to the definition of conditional probability.
 
@@ -24,7 +24,7 @@ But, also by the conditional probability definition, we could also say
 
 $$ P(B|A) = \frac{P(A,B)}{P(A)} $$
 
-The joint probability $$P(A,B)$$ is common to both of these. With some rearranging
+The joint probability $P(A,B)$ is common to both of these. With some rearranging
 
 $$
 \begin{aligned} 
@@ -37,7 +37,7 @@ So, from a "belief" perspective,
 
 $$ P(H=h_1|D) \propto P(D|H=h_1)P(H=h_1) $$ 
 
-However, the right-hand side of statement is not just for a random variable conditioned on a particular observation. In this case, $D$ is the observed data. Typically, it is assumed that each element in $$D$$ is independent of the other data elements.
+However, the right-hand side of statement is not just for a random variable conditioned on a particular observation. In this case, $D$ is the observed data. Typically, it is assumed that each element in $D$ is independent of the other data elements.
 
 $$
 P(D) = P(d_1, d_2, ... d_n) = P(d_1)P(d_2)...P(d_n)
@@ -71,7 +71,7 @@ $$
 
 When you think about it this way, bayesian probability is really just comparing weighted likelihoods in a way that makes them consistent with prior beliefs. 
 
-So finally, as a concrete example, here's some R code to demonstrate.
+So finally, as a concrete example, here's some R code to demonstrate. I assume a equal prior for each hypothesis, so they just cancel out. 
 
 {% highlight R %}
 D <- c(3, 3, 2, 6, 0, 0, 1, 0)
