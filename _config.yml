@@ -18,12 +18,10 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Probably Useful
+title: Random Points
 email: rsteckel@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  This site is a place for me to organize my thoughts about things I've found
-  useful over the years as a data scientist. My hope is that someone else finds
-  the things here useful too. 
+  Random points about statistics, probability and machine learning
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
